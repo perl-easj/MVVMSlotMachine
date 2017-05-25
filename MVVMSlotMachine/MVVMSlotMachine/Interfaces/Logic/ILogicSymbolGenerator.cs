@@ -1,0 +1,14 @@
+﻿namespace MVVMSlotMachine.Interfaces.Logic
+{
+    /// <summary>
+    /// Interface for generating a wheel symbol, based
+    /// on current probability settings
+    /// </summary>
+    public interface ILogicSymbolGenerator
+    {
+        /// <summary>
+        /// Generate a single wheel symbol, using the current probability settings
+        /// </summary>
+        Types.Types.WheelSymbol GetWheelSymbol();
+    }
+}
