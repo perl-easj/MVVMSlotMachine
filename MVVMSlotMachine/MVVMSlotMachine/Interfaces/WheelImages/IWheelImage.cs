@@ -12,7 +12,7 @@ namespace MVVMSlotMachine.Interfaces.WheelImages
         /// Retrieves the actual image source for the 
         /// specified wheel symbol.
         /// </summary>
-        string GetImageSource(Types.Types.WheelSymbol symbol);
+        string GetImageSource(Types.Enums.WheelSymbol symbol);
 
         /// <summary>
         /// Retrieves the entire set of image sources for the 

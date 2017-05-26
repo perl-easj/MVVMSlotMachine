@@ -7,12 +7,12 @@
     {
         public WheelImageB()
         {
-            SetImageSource(Types.Types.WheelSymbol.Bell, "..\\Assets\\ImageSetB\\Bell.jpg");
-            SetImageSource(Types.Types.WheelSymbol.Cherry, "..\\Assets\\ImageSetB\\Cherry.jpg");
-            SetImageSource(Types.Types.WheelSymbol.Clover, "..\\Assets\\ImageSetB\\Clover.jpg");
-            SetImageSource(Types.Types.WheelSymbol.Melon, "..\\Assets\\ImageSetB\\Melon.jpg");
-            SetImageSource(Types.Types.WheelSymbol.Seven, "..\\Assets\\ImageSetB\\Seven.jpg");
-            SetImageSource(Types.Types.WheelSymbol.Shoe, "..\\Assets\\ImageSetB\\Shoe.jpg");
+            SetImageSource(Types.Enums.WheelSymbol.Bell, "..\\Assets\\ImageSetB\\Bell.jpg");
+            SetImageSource(Types.Enums.WheelSymbol.Cherry, "..\\Assets\\ImageSetB\\Cherry.jpg");
+            SetImageSource(Types.Enums.WheelSymbol.Clover, "..\\Assets\\ImageSetB\\Clover.jpg");
+            SetImageSource(Types.Enums.WheelSymbol.Melon, "..\\Assets\\ImageSetB\\Melon.jpg");
+            SetImageSource(Types.Enums.WheelSymbol.Seven, "..\\Assets\\ImageSetB\\Seven.jpg");
+            SetImageSource(Types.Enums.WheelSymbol.Shoe, "..\\Assets\\ImageSetB\\Shoe.jpg");
         }
     }
 }

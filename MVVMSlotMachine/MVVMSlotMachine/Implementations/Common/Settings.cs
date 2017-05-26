@@ -20,8 +20,8 @@ namespace MVVMSlotMachine.Implementations.Common
         private int _initialCredits;
         private int _noOfRunsInAutoPlay;
         private int _autoPlayUpdateThreshold;
-        private Types.Types.UILanguage _language;
-        private Types.Types.UIImageSet _imageSet;
+        private Types.Enums.UILanguage _language;
+        private Types.Enums.UIImageSet _imageSet;
         private ITickScale _tickScaleWinnings;
         private ITickScale _tickScaleAutoPlay;
 
@@ -46,7 +46,7 @@ namespace MVVMSlotMachine.Implementations.Common
         }
 
         #region Settings related to implementation objects
-        public Types.Types.UILanguage Language
+        public Types.Enums.UILanguage Language
         {
             get { return _language; }
             set
@@ -56,7 +56,7 @@ namespace MVVMSlotMachine.Implementations.Common
             }
         }
 
-        public Types.Types.UIImageSet ImageSet
+        public Types.Enums.UIImageSet ImageSet
         {
             get { return _imageSet; }
             set
@@ -98,12 +98,12 @@ namespace MVVMSlotMachine.Implementations.Common
             set { _autoPlayUpdateThreshold = value; }
         }
 
-        public int InitialProbability(Types.Types.WheelSymbol symbol)
+        public int InitialProbability(Types.Enums.WheelSymbol symbol)
         {
             return _initialSettings.InitialProbability(symbol);
         }
 
-        public int InitialWinnings(Types.Types.WheelSymbol symbol, int noOfSymbols)
+        public int InitialWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols)
         {
             return _initialSettings.InitialWinnings(symbol, noOfSymbols);
         }

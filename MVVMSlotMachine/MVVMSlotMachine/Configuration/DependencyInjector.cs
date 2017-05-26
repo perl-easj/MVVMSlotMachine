@@ -102,13 +102,13 @@ namespace MVVMSlotMachine.Configuration
         /// Produces a specific implementation of 
         /// the IMessages interface
         /// </summary>
-        public static IMessages MessagesFactory(Types.Types.UILanguage language)
+        public static IMessages MessagesFactory(Types.Enums.UILanguage language)
         {
             switch (language)
             {
-                case Types.Types.UILanguage.Danish:
+                case Types.Enums.UILanguage.Danish:
                     return new MessagesDanish();
-                case Types.Types.UILanguage.English:
+                case Types.Enums.UILanguage.English:
                     return new MessagesEnglish();
                 default:
                     throw new ArgumentException(nameof(MessagesFactory));
@@ -119,13 +119,13 @@ namespace MVVMSlotMachine.Configuration
         /// Produces a specific implementation of 
         /// the IWheelImage interface
         /// </summary>
-        public static IWheelImage WheelImageFactory(Types.Types.UIImageSet imageSet)
+        public static IWheelImage WheelImageFactory(Types.Enums.UIImageSet imageSet)
         {
             switch (imageSet)
             {
-                case Types.Types.UIImageSet.A:
+                case Types.Enums.UIImageSet.A:
                     return new WheelImageA();
-                case Types.Types.UIImageSet.B:
+                case Types.Enums.UIImageSet.B:
                     return new WheelImageB();
                 default:
                     throw new ArgumentException(nameof(WheelImageFactory));

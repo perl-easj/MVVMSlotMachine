@@ -37,11 +37,10 @@ namespace MVVMSlotMachine.Implementations.Logic
 
         #region Public methods
         /// <summary>
-        /// Calculate the payback percentage, for the given 
-        /// number of wheel symbol. The current probability and
-        /// wheel settings are used.
+        /// Calculate the payback percentage. The current 
+        /// probability and winnings settings are used.
         /// </summary>
-        public double CalculatePaybackPercentage(int noOfSymbolsInGame)
+        public double CalculatePaybackPercentage()
         {
             double accumulatedWinnings = 0.0;
 
@@ -51,13 +50,13 @@ namespace MVVMSlotMachine.Implementations.Logic
             //    3) Amend the accumulated winnings with the contribution from this entry
             foreach (var item in _logicWinningsSetup.WinningsSettings)
             {
-                List<Types.Types.WheelSymbol> symbols = WheelSymbolConverter.KeyToWheelSymbols(item.Key);
+                List<Types.Enums.WheelSymbol> symbols = WheelSymbolConverter.KeyToWheelSymbols(item.Key);
                 int winnings = _logicCalculateWinnings.CalculateWinnings(symbols);
 
                 if (winnings > 0)
                 {
                     // We assume all symbols in winnings entry are identical
-                    accumulatedWinnings += (winnings * ProbabilityForSymbolCount(symbols[0], symbols.Count, noOfSymbolsInGame));
+                    accumulatedWinnings += (winnings * ProbabilityForSymbolCount(symbols[0], symbols.Count));
                 }
             }
 
@@ -66,10 +65,9 @@ namespace MVVMSlotMachine.Implementations.Logic
 
         /// <summary>
         /// Calculate the probability for an outcome containing
-        /// the specified number of the specified symbol, given
-        /// the specified total number of symbols in the game.
+        /// the specified number of the specified symbol.
         /// </summary>
-        public double ProbabilityForSymbolCount(Types.Types.WheelSymbol symbol, int count, int noOfSymbolsInGame)
+        public double ProbabilityForSymbolCount(Types.Enums.WheelSymbol symbol, int count)
         {
             double probability = 1.0;
             int probabilityPercent = _logicProbabilitySetup.GetProbability(symbol);
@@ -80,14 +78,14 @@ namespace MVVMSlotMachine.Implementations.Logic
                 probability = probability * (probabilityPercent * 1.0) / 100.0;
             }
 
-            // Probability for symbol NOT to appear "count - noOfSymbolsInGame" times 
-            for (int i = 0; i < noOfSymbolsInGame - count; i++)
+            // Probability for symbol NOT to appear in rest of symbols
+            for (int i = 0; i < Configuration.Constants.NoOfWheels - count; i++)
             {
                 probability = probability * ((100 - probabilityPercent) * 1.0) / 100.0;
             }
 
             // Multiply by number of ways this outcome can appear
-            probability = probability * Combinations(noOfSymbolsInGame, count);
+            probability = probability * Combinations(Configuration.Constants.NoOfWheels, count);
 
             return probability;
         } 

@@ -22,12 +22,12 @@ namespace MVVMSlotMachine.Interfaces.Models
         /// <summary>
         /// Retrieves the wheels symbols currently showing
         /// </summary>
-        Dictionary<int, Types.Types.WheelSymbol> WheelSymbols { get; }
+        Dictionary<int, Types.Enums.WheelSymbol> WheelSymbols { get; }
 
         /// <summary>
         /// Current state of the game session
         /// </summary>
-        Types.Types.NormalPlayState CurrentNormalPlayState { get; set; }
+        Types.Enums.NormalPlayState CurrentNormalPlayState { get; set; }
 
         /// <summary>
         /// Property to retrieve the command for initiating

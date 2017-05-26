@@ -11,7 +11,7 @@ namespace MVVMSlotMachine.Interfaces.Models
         /// <summary>
         /// Current state of the auto-play session
         /// </summary>
-        Types.Types.AutoPlayState CurrentAutoPlayState { get; set; }
+        Types.Enums.AutoPlayState CurrentAutoPlayState { get; set; }
 
         /// <summary>
         /// The number of games to play during an auto-play session

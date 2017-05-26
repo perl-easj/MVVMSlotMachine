@@ -20,7 +20,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         public LogicSymbolGenerator(ILogicProbabilitySetup logicProbabilitySetup)
         {          
             _randomGenerator = new Random();
-            _enumSymbols = Enum.GetValues(typeof(Types.Types.WheelSymbol));
+            _enumSymbols = Enum.GetValues(typeof(Types.Enums.WheelSymbol));
 
             _logicProbabilitySetup = logicProbabilitySetup;
         }
@@ -35,12 +35,12 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// <summary>
         /// Generates a single wheel symbol, using the current probability settings.
         /// </summary>
-        public Types.Types.WheelSymbol GetWheelSymbol()
+        public Types.Enums.WheelSymbol GetWheelSymbol()
         {
             int percent = _randomGenerator.Next(100);
             int accumulatedProbability = 0;
 
-            foreach (Types.Types.WheelSymbol symbol in _enumSymbols)
+            foreach (Types.Enums.WheelSymbol symbol in _enumSymbols)
             {
                 accumulatedProbability += _logicProbabilitySetup.GetProbability(symbol);
                 if (accumulatedProbability > percent)

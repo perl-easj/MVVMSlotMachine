@@ -38,24 +38,24 @@
         /// <summary>
         /// Language used in the UI.
         /// </summary>
-        Types.Types.UILanguage Language { get; }
+        Types.Enums.UILanguage Language { get; }
 
         /// <summary>
         /// Image set used for wheel images in the UI
         /// </summary>
-        Types.Types.UIImageSet ImageSet { get; }
+        Types.Enums.UIImageSet ImageSet { get; }
 
         /// <summary>
         /// Initial settings for the probability for
         /// generating a specific wheel symbol
         /// </summary>
-        int InitialProbability(Types.Types.WheelSymbol symbol);
+        int InitialProbability(Types.Enums.WheelSymbol symbol);
 
         /// <summary>
         /// Initial settings for the winnings for
         /// a specific wheel symbol combination
         /// </summary>
-        int InitialWinnings(Types.Types.WheelSymbol symbol, int noOfSymbols);
+        int InitialWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols);
 
         /// <summary>
         /// Tick scale used for the winnings setup

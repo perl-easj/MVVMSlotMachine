@@ -7,20 +7,20 @@
     {
         public MessagesDanish()
         {
-            SetTranslation(Types.Types.MessageType.Ready, "klar");
-            SetTranslation(Types.Types.MessageType.Play, "spil");
-            SetTranslation(Types.Types.MessageType.Go, "kør");
-            SetTranslation(Types.Types.MessageType.Spins, "kørsler");
-            SetTranslation(Types.Types.MessageType.YouWon, "du vandt");
-            SetTranslation(Types.Types.MessageType.Credit, "krone");
-            SetTranslation(Types.Types.MessageType.Credits, "kroner");
-            SetTranslation(Types.Types.MessageType.Cancel, "afbryd");
-            SetTranslation(Types.Types.MessageType.Running, "kører");
-            SetTranslation(Types.Types.MessageType.SpinningWheels, "hjulene drejer");
-            SetTranslation(Types.Types.MessageType.PayBack, "tilbagebetaling");
-            SetTranslation(Types.Types.MessageType.Simulated, "simuleret");
-            SetTranslation(Types.Types.MessageType.Calculated, "beregnet");
-            SetTranslation(Types.Types.MessageType.Done, "udført");
+            SetTranslation(Types.Enums.MessageType.Ready, "klar");
+            SetTranslation(Types.Enums.MessageType.Play, "spil");
+            SetTranslation(Types.Enums.MessageType.Go, "kør");
+            SetTranslation(Types.Enums.MessageType.Spins, "kørsler");
+            SetTranslation(Types.Enums.MessageType.YouWon, "du vandt");
+            SetTranslation(Types.Enums.MessageType.Credit, "krone");
+            SetTranslation(Types.Enums.MessageType.Credits, "kroner");
+            SetTranslation(Types.Enums.MessageType.Cancel, "afbryd");
+            SetTranslation(Types.Enums.MessageType.Running, "kører");
+            SetTranslation(Types.Enums.MessageType.SpinningWheels, "hjulene drejer");
+            SetTranslation(Types.Enums.MessageType.PayBack, "tilbagebetaling");
+            SetTranslation(Types.Enums.MessageType.Simulated, "simuleret");
+            SetTranslation(Types.Enums.MessageType.Calculated, "beregnet");
+            SetTranslation(Types.Enums.MessageType.Done, "udført");
         }
     }
 }

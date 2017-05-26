@@ -11,11 +11,11 @@ namespace MVVMSlotMachine.Implementations.WheelImages
     /// </summary>
     public abstract class WheelImageBase : IWheelImage
     {
-        private Dictionary<Types.Types.WheelSymbol, string> _imageSources;
+        private Dictionary<Types.Enums.WheelSymbol, string> _imageSources;
 
         protected WheelImageBase()
         {
-            _imageSources = new Dictionary<Types.Types.WheelSymbol, string>();
+            _imageSources = new Dictionary<Types.Enums.WheelSymbol, string>();
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace MVVMSlotMachine.Implementations.WheelImages
         /// Trying to retrieve the source for a wheel symbol for which 
         /// no source has been specificed will cause an exception.
         /// </summary>
-        public string GetImageSource(Types.Types.WheelSymbol symbol)
+        public string GetImageSource(Types.Enums.WheelSymbol symbol)
         {
             if (_imageSources.ContainsKey(symbol))
             {
@@ -42,9 +42,9 @@ namespace MVVMSlotMachine.Implementations.WheelImages
         public Dictionary<string, string> GetAllImageSources()
         {
             Dictionary<string, string> imageSources = new Dictionary<string, string>();
-            foreach (Types.Types.WheelSymbol symbol in Enum.GetValues(typeof(Types.Types.WheelSymbol)))
+            foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
             {
-                imageSources.Add(Enum.GetName(typeof(Types.Types.WheelSymbol), symbol), GetImageSource(symbol));
+                imageSources.Add(Enum.GetName(typeof(Types.Enums.WheelSymbol), symbol), GetImageSource(symbol));
             }
 
             return imageSources;
@@ -55,7 +55,7 @@ namespace MVVMSlotMachine.Implementations.WheelImages
         /// Trying to set the image source twice for the same 
         /// symbol will cause an exception.
         /// </summary>
-        protected void SetImageSource(Types.Types.WheelSymbol symbol, string imageSource)
+        protected void SetImageSource(Types.Enums.WheelSymbol symbol, string imageSource)
         {
             if (_imageSources.ContainsKey(symbol))
             {

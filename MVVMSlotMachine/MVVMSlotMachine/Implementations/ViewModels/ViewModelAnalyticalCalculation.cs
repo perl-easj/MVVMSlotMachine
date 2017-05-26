@@ -33,9 +33,9 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                double percent = _logicAnalyticalCalculation.CalculatePaybackPercentage(Constants.NoOfWheels);
-                string paybackText = Configuration.Implementations.Messages.GenerateText(Types.Types.MessageType.PayBack);
-                string calculatedText = Configuration.Implementations.Messages.GenerateText(Types.Types.MessageType.Calculated);
+                double percent = _logicAnalyticalCalculation.CalculatePaybackPercentage();
+                string paybackText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.PayBack);
+                string calculatedText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.Calculated);
 
                 return string.Format("{0:0.00} % {1} ({2})", percent, paybackText, calculatedText);
             }

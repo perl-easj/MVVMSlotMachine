@@ -31,8 +31,8 @@ namespace MVVMSlotMachine.Controllers
         {
             return _modelNormalPlay == null ||
                    (_modelNormalPlay.NoOfCredits > 0 &&
-                    (_modelNormalPlay.CurrentNormalPlayState == Types.Types.NormalPlayState.Idle ||
-                     _modelNormalPlay.CurrentNormalPlayState == Types.Types.NormalPlayState.BeforeFirstInteraction));
+                    (_modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.Idle ||
+                     _modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.BeforeFirstInteraction));
         }
 
         /// <summary>
@@ -44,12 +44,12 @@ namespace MVVMSlotMachine.Controllers
             if (_modelNormalPlay != null)
             {
                 _modelNormalPlay.NoOfCredits--;
-                _modelNormalPlay.CurrentNormalPlayState = Types.Types.NormalPlayState.Spinning;
+                _modelNormalPlay.CurrentNormalPlayState = Types.Enums.NormalPlayState.Spinning;
 
                 await _modelNormalPlay.Spin();
 
                 _modelNormalPlay.NoOfCredits += _modelNormalPlay.CreditsWon;
-                _modelNormalPlay.CurrentNormalPlayState = Types.Types.NormalPlayState.Idle;
+                _modelNormalPlay.CurrentNormalPlayState = Types.Enums.NormalPlayState.Idle;
             }
         }
     }

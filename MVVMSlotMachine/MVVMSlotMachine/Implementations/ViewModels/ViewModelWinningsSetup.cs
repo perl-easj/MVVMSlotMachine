@@ -147,7 +147,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// <summary>
         /// Update the winnings entry corresponding to the specified wheel symbols.
         /// </summary>
-        private void UpdateItem(List<Types.Types.WheelSymbol> symbols, int newWinnings)
+        private void UpdateItem(List<Types.Enums.WheelSymbol> symbols, int newWinnings)
         {
             for (int index = 0; index < _winList.Count; index++)
             {
@@ -167,7 +167,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// This is defined as the lists having the same length AND
         /// all symbols match at each position in the lists
         /// </summary>
-        private bool CompareSymbols(List<Types.Types.WheelSymbol> symbolsA, List<Types.Types.WheelSymbol> symbolsB)
+        private bool CompareSymbols(List<Types.Enums.WheelSymbol> symbolsA, List<Types.Enums.WheelSymbol> symbolsB)
         {
             if (symbolsA.Count != symbolsB.Count)
             {

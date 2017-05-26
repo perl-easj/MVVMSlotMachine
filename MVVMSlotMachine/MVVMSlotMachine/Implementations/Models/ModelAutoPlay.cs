@@ -20,12 +20,12 @@ namespace MVVMSlotMachine.Implementations.Models
     public class ModelAutoPlay : PropertySource, IModelAutoPlay
     {
         #region Instance fields
-        private Types.Types.AutoPlayState _currentAutoPlayState;
+        private Types.Enums.AutoPlayState _currentAutoPlayState;
         private int _noOfRunsInAutoPlay;
         private int _percentCompleted;
         private double _percentPayback;
         private Dictionary<int, int> _autoRunData;
-        private Dictionary<int, Types.Types.WheelSymbol> _wheelSymbols;
+        private Dictionary<int, Types.Enums.WheelSymbol> _wheelSymbols;
 
         private ICommandExtended _autoCommand;
 
@@ -43,12 +43,12 @@ namespace MVVMSlotMachine.Implementations.Models
             ILogicSymbolGenerator logicSymbolGenerator,
             int noOfRunsInAutoPlay)
         {
-            CurrentAutoPlayState = Types.Types.AutoPlayState.BeforeFirstInteraction;
+            CurrentAutoPlayState = Types.Enums.AutoPlayState.BeforeFirstInteraction;
             NoOfRuns = noOfRunsInAutoPlay;
             PercentCompleted = 0;
             PercentPayback = 100;
             _autoRunData = new Dictionary<int, int>();
-            _wheelSymbols = new Dictionary<int, Types.Types.WheelSymbol>();
+            _wheelSymbols = new Dictionary<int, Types.Enums.WheelSymbol>();
 
             _autoCommand = new AutoPlayControllerCommand(this);
 
@@ -72,7 +72,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Gets/sets the current state of the auto-play session.
         /// </summary>
-        public Types.Types.AutoPlayState CurrentAutoPlayState
+        public Types.Enums.AutoPlayState CurrentAutoPlayState
         {
             get { return _currentAutoPlayState; }
             set
@@ -94,7 +94,7 @@ namespace MVVMSlotMachine.Implementations.Models
             {
                 _noOfRunsInAutoPlay = value;
                 PercentCompleted = 0;
-                CurrentAutoPlayState = Types.Types.AutoPlayState.BeforeFirstInteraction;
+                CurrentAutoPlayState = Types.Enums.AutoPlayState.BeforeFirstInteraction;
                 OnPropertyChanged();
             }
         }
@@ -154,7 +154,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// </summary>
         public void Run(long noOfRuns)
         {
-            CurrentAutoPlayState = Types.Types.AutoPlayState.Running;
+            CurrentAutoPlayState = Types.Enums.AutoPlayState.Running;
 
             _didCancel = false;
             _percentCompleted = 0;
@@ -228,7 +228,7 @@ namespace MVVMSlotMachine.Implementations.Models
             if (_didCancel)
             {
                 PercentPayback = 0;
-                CurrentAutoPlayState = Types.Types.AutoPlayState.BeforeFirstInteraction;
+                CurrentAutoPlayState = Types.Enums.AutoPlayState.BeforeFirstInteraction;
             }
             // Normal completion; calculate final payback percentage, and enter idle state
             else
@@ -236,7 +236,7 @@ namespace MVVMSlotMachine.Implementations.Models
                 int autoRunWinnings = _logicCalculateWinnings.CalculateTotalWinnings(ConvertAutoRunDataSymbolsKey());
                 long runsCompleted = (long)runWorkerCompletedEventArgs.Result;
                 PercentPayback = (autoRunWinnings * 100.0) / (runsCompleted * 1.0);
-                CurrentAutoPlayState = Types.Types.AutoPlayState.Idle;
+                CurrentAutoPlayState = Types.Enums.AutoPlayState.Idle;
             }
         }
 
@@ -261,7 +261,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Perform a single spin of the wheels, without any delays
         /// </summary>
-        private Dictionary<int, Types.Types.WheelSymbol> SpinNoDelay()
+        private Dictionary<int, Types.Enums.WheelSymbol> SpinNoDelay()
         {
             for (int wheelNo = 0; wheelNo < Configuration.Constants.NoOfWheels; wheelNo++)
             {
@@ -276,7 +276,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// which is the outcome of a single spin. This update should be 
         /// done with exclusive access, to avoid threading issues.
         /// </summary>
-        private void AddToAutoRunData(List<Types.Types.WheelSymbol> wheelSymbols)
+        private void AddToAutoRunData(List<Types.Enums.WheelSymbol> wheelSymbols)
         {
             int key = WheelSymbolConverter.WheelSymbolsToKey(wheelSymbols);
             if (!_autoRunData.ContainsKey(key))
@@ -291,9 +291,9 @@ namespace MVVMSlotMachine.Implementations.Models
         /// by the winnings calculation logic. The conversion is done with
         /// exclusive data access, to avoid threading issues.
         /// </summary>
-        private Dictionary<List<Types.Types.WheelSymbol>, int> ConvertAutoRunDataSymbolsKey()
+        private Dictionary<List<Types.Enums.WheelSymbol>, int> ConvertAutoRunDataSymbolsKey()
         {
-            var convertedData = new Dictionary<List<Types.Types.WheelSymbol>, int>();
+            var convertedData = new Dictionary<List<Types.Enums.WheelSymbol>, int>();
 
             _mutex.WaitOne();
             foreach (var element in _autoRunData)
@@ -317,10 +317,10 @@ namespace MVVMSlotMachine.Implementations.Models
             _mutex.WaitOne();
             foreach (var element in _autoRunData)
             {
-                List<Types.Types.WheelSymbol> symbols = WheelSymbolConverter.KeyToWheelSymbols(element.Key);
+                List<Types.Enums.WheelSymbol> symbols = WheelSymbolConverter.KeyToWheelSymbols(element.Key);
 
-                Dictionary<Types.Types.WheelSymbol, int> symbolCount = new Dictionary<Types.Types.WheelSymbol, int>();
-                foreach (Types.Types.WheelSymbol symbol in Enum.GetValues(typeof(Types.Types.WheelSymbol)))
+                Dictionary<Types.Enums.WheelSymbol, int> symbolCount = new Dictionary<Types.Enums.WheelSymbol, int>();
+                foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
                 {
                     symbolCount.Add(symbol, symbols.FindAll(s => s == symbol).Count);
                 }

@@ -22,8 +22,8 @@ namespace MVVMSlotMachine.Implementations.Models
         private int _rotationDelayMilliSecs;
 
         private int _noOfCredits;
-        private Dictionary<int, Types.Types.WheelSymbol> _wheelSymbols;
-        private Types.Types.NormalPlayState _currentNormalPlayState;        
+        private Dictionary<int, Types.Enums.WheelSymbol> _wheelSymbols;
+        private Types.Enums.NormalPlayState _currentNormalPlayState;        
 
         private ICommandExtended _spinCommand;
         private ICommandExtended _addCreditCommand;
@@ -44,11 +44,11 @@ namespace MVVMSlotMachine.Implementations.Models
             _rotationDelayMilliSecs = rotationDelayMilliSecs;
 
             _noOfCredits = initialCredits;
-            CurrentNormalPlayState = Types.Types.NormalPlayState.BeforeFirstInteraction;
-            _wheelSymbols = new Dictionary<int, Types.Types.WheelSymbol>();
+            CurrentNormalPlayState = Types.Enums.NormalPlayState.BeforeFirstInteraction;
+            _wheelSymbols = new Dictionary<int, Types.Enums.WheelSymbol>();
             for (int wheelNo = 0; wheelNo < Configuration.Constants.NoOfWheels; wheelNo++)
             {
-                _wheelSymbols[wheelNo] = Types.Types.WheelSymbol.Cherry;
+                _wheelSymbols[wheelNo] = Types.Enums.WheelSymbol.Cherry;
             }
 
             _spinCommand = new SpinControllerCommand(this);
@@ -96,7 +96,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Gets/sets the wheels symbols currently showing
         /// </summary>
-        public Dictionary<int, Types.Types.WheelSymbol> WheelSymbols
+        public Dictionary<int, Types.Enums.WheelSymbol> WheelSymbols
         {
             get { return _wheelSymbols; }
             private set
@@ -109,7 +109,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Gets/sets the current state of the game session
         /// </summary>
-        public Types.Types.NormalPlayState CurrentNormalPlayState
+        public Types.Enums.NormalPlayState CurrentNormalPlayState
         {
             get { return _currentNormalPlayState; }
             set
@@ -161,7 +161,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// Performs a single "rotation" (i.e. update of wheel symbols)
         /// of all wheels.
         /// </summary>
-        private Dictionary<int, Types.Types.WheelSymbol> DoRotation()
+        private Dictionary<int, Types.Enums.WheelSymbol> DoRotation()
         {
             for (int wheelNo = 0; wheelNo < Configuration.Constants.NoOfWheels; wheelNo++)
             {

@@ -9,16 +9,16 @@ namespace MVVMSlotMachine.Implementations.ViewModels
     /// </summary>
     public class ItemViewModelWinningsEntry
     {
-        private List<Types.Types.WheelSymbol> _symbols;
+        private List<Types.Enums.WheelSymbol> _symbols;
         private int _winAmount;
 
-        public ItemViewModelWinningsEntry(List<Types.Types.WheelSymbol> symbols, int winAmount)
+        public ItemViewModelWinningsEntry(List<Types.Enums.WheelSymbol> symbols, int winAmount)
         {
             _symbols = symbols;
             _winAmount = winAmount;
         }
 
-        public List<Types.Types.WheelSymbol> WheelSymbols
+        public List<Types.Enums.WheelSymbol> WheelSymbols
         {
             get { return _symbols; }
         }

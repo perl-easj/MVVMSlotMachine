@@ -30,8 +30,8 @@ namespace MVVMSlotMachine.Controllers
         public override bool CanExecute(object parameter)
         {
             return (_modelNormalPlay != null) && 
-                   (_modelNormalPlay.CurrentNormalPlayState == Types.Types.NormalPlayState.Idle ||
-                    _modelNormalPlay.CurrentNormalPlayState == Types.Types.NormalPlayState.BeforeFirstInteraction);
+                   (_modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.Idle ||
+                    _modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.BeforeFirstInteraction);
         }
 
         public override void Execute(object parameter)

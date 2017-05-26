@@ -11,20 +11,20 @@ namespace MVVMSlotMachine.Implementations.Messages
     /// </summary>
     public abstract class MessagesBase : IMessages
     {
-        private Dictionary<Types.Types.MessageType, string> _dictionary;
+        private Dictionary<Types.Enums.MessageType, string> _dictionary;
 
         protected MessagesBase()
         {
-            _dictionary = new Dictionary<Types.Types.MessageType, string>();
+            _dictionary = new Dictionary<Types.Enums.MessageType, string>();
         }
 
         /// <summary>
         /// Generate the text for the specified message type, 
         /// using a single post-processing action.
         /// </summary>
-        public string GenerateText(Types.Types.MessageType msgType, Types.Types.MessagePostProcessing postProcessAction)
+        public string GenerateText(Types.Enums.MessageType msgType, Types.Enums.MessagePostProcessing postProcessAction)
         {
-            return GenerateText(msgType, new List<Types.Types.MessagePostProcessing> { postProcessAction });
+            return GenerateText(msgType, new List<Types.Enums.MessagePostProcessing> { postProcessAction });
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace MVVMSlotMachine.Implementations.Messages
         /// Trying to generate a text for a message type for which 
         /// no translation has been specificed will cause an exception.
         /// </summary>
-        public string GenerateText(Types.Types.MessageType msgType, List<Types.Types.MessagePostProcessing> postProcessActions = null)
+        public string GenerateText(Types.Enums.MessageType msgType, List<Types.Enums.MessagePostProcessing> postProcessActions = null)
         {
             if (!_dictionary.ContainsKey(msgType))
             {
@@ -47,7 +47,7 @@ namespace MVVMSlotMachine.Implementations.Messages
         /// Set a translation of a specific message type.
         /// Trying to set the same translation twice will cause an exception.
         /// </summary>
-        protected void SetTranslation(Types.Types.MessageType msgType, string translation)
+        protected void SetTranslation(Types.Enums.MessageType msgType, string translation)
         {
             if (_dictionary.ContainsKey(msgType))
             {
@@ -62,7 +62,7 @@ namespace MVVMSlotMachine.Implementations.Messages
         /// If the list of actions contains an action which is not handled by
         /// the method, an exception is thrown.
         /// </summary>
-        private string PostProcessText(string originalText, List<Types.Types.MessagePostProcessing> postProcessActions)
+        private string PostProcessText(string originalText, List<Types.Enums.MessagePostProcessing> postProcessActions)
         {
             string processedText = originalText;
 
@@ -72,22 +72,22 @@ namespace MVVMSlotMachine.Implementations.Messages
                 {
                     switch (action)
                     {
-                        case Types.Types.MessagePostProcessing.AddEllipsis:
+                        case Types.Enums.MessagePostProcessing.AddEllipsis:
                             processedText += "...";
                             break;
-                        case Types.Types.MessagePostProcessing.AddExclamationMark:
+                        case Types.Enums.MessagePostProcessing.AddExclamationMark:
                             processedText += "!";
                             break;
-                        case Types.Types.MessagePostProcessing.AddQuestionMark:
+                        case Types.Enums.MessagePostProcessing.AddQuestionMark:
                             processedText += "?";
                             break;
-                        case Types.Types.MessagePostProcessing.InitialCaps:
+                        case Types.Enums.MessagePostProcessing.InitialCaps:
                             if (processedText.Length > 0)
                             {
                                 processedText = processedText.Substring(0, 1).ToUpper() + processedText.Substring(1);
                             }
                             break;
-                        case Types.Types.MessagePostProcessing.AllCaps:
+                        case Types.Enums.MessagePostProcessing.AllCaps:
                             processedText = processedText.ToUpper();
                             break;
                         default:

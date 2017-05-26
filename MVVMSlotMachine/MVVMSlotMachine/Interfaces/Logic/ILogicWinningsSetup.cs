@@ -24,13 +24,13 @@ namespace MVVMSlotMachine.Interfaces.Logic
         /// Retrieve the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        int GetWinnings(Types.Types.WheelSymbol symbol, int noOfSymbols);
+        int GetWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols);
 
         /// <summary>
         /// Set the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        void SetWinnings(Types.Types.WheelSymbol symbol, int noOfSymbols, int winAmount);
+        void SetWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols, int winAmount);
 
         /// <summary>
         /// Set the winnings to the default winnings.

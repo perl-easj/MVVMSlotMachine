@@ -14,8 +14,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public bool UILanguage
         {
-            get { return Configuration.Implementations.Settings.Language == Types.Types.UILanguage.English; }
-            set { Configuration.Implementations.Settings.Language = value ? Types.Types.UILanguage.English : Types.Types.UILanguage.Danish; }
+            get { return Configuration.Implementations.Settings.Language == Types.Enums.UILanguage.English; }
+            set { Configuration.Implementations.Settings.Language = value ? Types.Enums.UILanguage.English : Types.Enums.UILanguage.Danish; }
         }
 
         /// <summary>
@@ -23,8 +23,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public bool UIImageSet
         {
-            get { return Configuration.Implementations.Settings.ImageSet == Types.Types.UIImageSet.A; }
-            set { Configuration.Implementations.Settings.ImageSet = value ? Types.Types.UIImageSet.A : Types.Types.UIImageSet.B; }
+            get { return Configuration.Implementations.Settings.ImageSet == Types.Enums.UIImageSet.A; }
+            set { Configuration.Implementations.Settings.ImageSet = value ? Types.Enums.UIImageSet.A : Types.Enums.UIImageSet.B; }
         }
     }
 }

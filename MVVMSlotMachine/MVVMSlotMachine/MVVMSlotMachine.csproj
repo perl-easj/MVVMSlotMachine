@@ -154,9 +154,10 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Implementations\Models\ModelNormalPlay.cs" />
-    <Compile Include="Types\Types.cs" />
+    <Compile Include="Types\Enums.cs" />
     <Compile Include="Implementations\ViewModels\ViewModelNormalPlay.cs" />
     <Compile Include="Implementations\ViewModels\ViewModelFacade.cs" />
+    <Compile Include="Types\WheelSymbols.cs" />
     <Compile Include="Views\AutoPlay.xaml.cs">
       <DependentUpon>AutoPlay.xaml</DependentUpon>
     </Compile>

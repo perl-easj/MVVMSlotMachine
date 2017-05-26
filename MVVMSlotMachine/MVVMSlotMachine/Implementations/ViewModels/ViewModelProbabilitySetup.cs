@@ -42,8 +42,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public int ProbBell
         {
-            get { return _logicProbabilitySetup.GetProbability(Types.Types.WheelSymbol.Bell); }
-            set { _logicProbabilitySetup.SetProbability(Types.Types.WheelSymbol.Bell, value); }
+            get { return _logicProbabilitySetup.GetProbability(Types.Enums.WheelSymbol.Bell); }
+            set { _logicProbabilitySetup.SetProbability(Types.Enums.WheelSymbol.Bell, value); }
         }
 
         /// <summary>
@@ -51,8 +51,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public int ProbCherry
         {
-            get { return _logicProbabilitySetup.GetProbability(Types.Types.WheelSymbol.Cherry); }
-            set { _logicProbabilitySetup.SetProbability(Types.Types.WheelSymbol.Cherry, value); }
+            get { return _logicProbabilitySetup.GetProbability(Types.Enums.WheelSymbol.Cherry); }
+            set { _logicProbabilitySetup.SetProbability(Types.Enums.WheelSymbol.Cherry, value); }
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public int ProbClover
         {
-            get { return _logicProbabilitySetup.GetProbability(Types.Types.WheelSymbol.Clover); }
-            set { _logicProbabilitySetup.SetProbability(Types.Types.WheelSymbol.Clover, value); }
+            get { return _logicProbabilitySetup.GetProbability(Types.Enums.WheelSymbol.Clover); }
+            set { _logicProbabilitySetup.SetProbability(Types.Enums.WheelSymbol.Clover, value); }
         }
 
         /// <summary>
@@ -69,8 +69,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public int ProbMelon
         {
-            get { return _logicProbabilitySetup.GetProbability(Types.Types.WheelSymbol.Melon); }
-            set { _logicProbabilitySetup.SetProbability(Types.Types.WheelSymbol.Melon, value); }
+            get { return _logicProbabilitySetup.GetProbability(Types.Enums.WheelSymbol.Melon); }
+            set { _logicProbabilitySetup.SetProbability(Types.Enums.WheelSymbol.Melon, value); }
         }
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public int ProbSeven
         {
-            get { return _logicProbabilitySetup.GetProbability(Types.Types.WheelSymbol.Seven); }
-            set { _logicProbabilitySetup.SetProbability(Types.Types.WheelSymbol.Seven, value); }
+            get { return _logicProbabilitySetup.GetProbability(Types.Enums.WheelSymbol.Seven); }
+            set { _logicProbabilitySetup.SetProbability(Types.Enums.WheelSymbol.Seven, value); }
         }
 
         /// <summary>
@@ -87,8 +87,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public int ProbShoe
         {
-            get { return _logicProbabilitySetup.GetProbability(Types.Types.WheelSymbol.Shoe); }
-            set { _logicProbabilitySetup.SetProbability(Types.Types.WheelSymbol.Shoe, value); }
+            get { return _logicProbabilitySetup.GetProbability(Types.Enums.WheelSymbol.Shoe); }
+            set { _logicProbabilitySetup.SetProbability(Types.Enums.WheelSymbol.Shoe, value); }
         }
 
         /// <summary>

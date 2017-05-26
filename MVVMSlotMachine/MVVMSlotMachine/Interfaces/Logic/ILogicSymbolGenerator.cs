@@ -9,6 +9,6 @@
         /// <summary>
         /// Generate a single wheel symbol, using the current probability settings
         /// </summary>
-        Types.Types.WheelSymbol GetWheelSymbol();
+        Types.Enums.WheelSymbol GetWheelSymbol();
     }
 }

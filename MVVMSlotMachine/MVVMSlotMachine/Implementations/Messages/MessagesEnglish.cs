@@ -7,20 +7,20 @@
     {
         public MessagesEnglish()
         {
-            SetTranslation(Types.Types.MessageType.Ready ,"ready");
-            SetTranslation(Types.Types.MessageType.Play, "play");
-            SetTranslation(Types.Types.MessageType.Go, "go");
-            SetTranslation(Types.Types.MessageType.Spins, "runs");
-            SetTranslation(Types.Types.MessageType.YouWon, "you won");
-            SetTranslation(Types.Types.MessageType.Credit, "credit");
-            SetTranslation(Types.Types.MessageType.Credits, "credits");
-            SetTranslation(Types.Types.MessageType.Cancel, "cancel");
-            SetTranslation(Types.Types.MessageType.Running, "running");
-            SetTranslation(Types.Types.MessageType.SpinningWheels, "wheels are spinning");
-            SetTranslation(Types.Types.MessageType.PayBack, "payback");
-            SetTranslation(Types.Types.MessageType.Simulated, "simulated");
-            SetTranslation(Types.Types.MessageType.Calculated, "calculated");
-            SetTranslation(Types.Types.MessageType.Done, "done");
+            SetTranslation(Types.Enums.MessageType.Ready ,"ready");
+            SetTranslation(Types.Enums.MessageType.Play, "play");
+            SetTranslation(Types.Enums.MessageType.Go, "go");
+            SetTranslation(Types.Enums.MessageType.Spins, "runs");
+            SetTranslation(Types.Enums.MessageType.YouWon, "you won");
+            SetTranslation(Types.Enums.MessageType.Credit, "credit");
+            SetTranslation(Types.Enums.MessageType.Credits, "credits");
+            SetTranslation(Types.Enums.MessageType.Cancel, "cancel");
+            SetTranslation(Types.Enums.MessageType.Running, "running");
+            SetTranslation(Types.Enums.MessageType.SpinningWheels, "wheels are spinning");
+            SetTranslation(Types.Enums.MessageType.PayBack, "payback");
+            SetTranslation(Types.Enums.MessageType.Simulated, "simulated");
+            SetTranslation(Types.Enums.MessageType.Calculated, "calculated");
+            SetTranslation(Types.Enums.MessageType.Done, "done");
         }
     }
 }

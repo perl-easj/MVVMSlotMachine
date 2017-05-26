@@ -47,7 +47,7 @@ namespace MVVMSlotMachine.Implementations.Logic
                 // total number of wheels, and total number of wheels minus 1.
                 for (int count = Configuration.Constants.NoOfWheels; count >= Configuration.Constants.NoOfWheels - 1; count--)
                 {
-                    foreach (Types.Types.WheelSymbol symbol in Enum.GetValues(typeof(Types.Types.WheelSymbol)))
+                    foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
                     {
                         int winnings = GetWinnings(symbol, count);
                         completeWinnings.Add(Common.WheelSymbolConverter.SymbolCountToKey(symbol, count), winnings);
@@ -64,7 +64,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// Retrieve the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        public int GetWinnings(Types.Types.WheelSymbol symbol, int count)
+        public int GetWinnings(Types.Enums.WheelSymbol symbol, int count)
         {
             int entryKey = WheelSymbolConverter.SymbolCountToKey(symbol, count);
             if (!_winningsSettings.ContainsKey(entryKey))
@@ -79,7 +79,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// Set the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        public void SetWinnings(Types.Types.WheelSymbol symbol, int count, int winAmount)
+        public void SetWinnings(Types.Enums.WheelSymbol symbol, int count, int winAmount)
         {
             if (count < 1 || winAmount < 0)
             {
@@ -106,7 +106,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         {
             for (int count = 1; count <= Constants.NoOfWheels; count++)
             {
-                foreach (Types.Types.WheelSymbol symbol in Enum.GetValues(typeof(Types.Types.WheelSymbol)))
+                foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
                 {
                     int winnings = Configuration.Implementations.DefaultWinnings(symbol, count);
                     if (winnings > 0)

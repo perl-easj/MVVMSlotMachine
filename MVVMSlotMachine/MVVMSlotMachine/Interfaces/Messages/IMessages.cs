@@ -11,12 +11,12 @@ namespace MVVMSlotMachine.Interfaces.Messages
         /// Generate the text for the specified message type, 
         /// using a single post-processing action
         /// </summary>
-        string GenerateText(Types.Types.MessageType msgType, Types.Types.MessagePostProcessing postProcessAction);
+        string GenerateText(Types.Enums.MessageType msgType, Types.Enums.MessagePostProcessing postProcessAction);
 
         /// <summary>
         /// Generate the text for the specified message type, 
         /// using a list of post-processing actions
         /// </summary>
-        string GenerateText(Types.Types.MessageType msgType, List<Types.Types.MessagePostProcessing> postProcessActions = null);
+        string GenerateText(Types.Enums.MessageType msgType, List<Types.Enums.MessagePostProcessing> postProcessActions = null);
     }
 }

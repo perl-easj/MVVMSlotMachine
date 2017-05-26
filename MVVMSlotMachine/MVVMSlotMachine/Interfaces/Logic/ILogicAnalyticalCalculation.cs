@@ -6,17 +6,15 @@
     public interface ILogicAnalyticalCalculation
     {
         /// <summary>
-        /// Calculate the payback percentage, for the given 
-        /// number of wheel symbol. The current probability and
-        /// wheel settings are used.
+        /// Calculate the payback percentage. The current 
+        /// probability and winnings settings are used.
         /// </summary>
-        double CalculatePaybackPercentage(int noOfSymbolsInGame);
+        double CalculatePaybackPercentage();
 
         /// <summary>
         /// Calculate the probability for an outcome containing
-        /// the specified number of the specified symbol, given
-        /// the specified total number of symbols in the game.
+        /// the specified number of the specified symbol.
         /// </summary>
-        double ProbabilityForSymbolCount(Types.Types.WheelSymbol symbol, int count, int noOfSymbolsInGame);
+        double ProbabilityForSymbolCount(Types.Enums.WheelSymbol symbol, int count);
     }
 }

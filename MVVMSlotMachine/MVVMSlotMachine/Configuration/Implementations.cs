@@ -183,12 +183,12 @@ namespace MVVMSlotMachine.Configuration
             set { _viewModelWinningsSetup = value; }
         }
 
-        public static int DefaultProbability(Types.Types.WheelSymbol symbol)
+        public static int DefaultProbability(Types.Enums.WheelSymbol symbol)
         {
             return _settings.InitialProbability(symbol);
         }
 
-        public static int DefaultWinnings(Types.Types.WheelSymbol symbol, int noOfSymbols)
+        public static int DefaultWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols)
         {
             return _settings.InitialWinnings(symbol, noOfSymbols);
         }

@@ -29,11 +29,11 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// <summary>
         /// Calculate winnings for a single game outcome.
         /// </summary>
-        public int CalculateWinnings(List<Types.Types.WheelSymbol> wheelSymbols)
+        public int CalculateWinnings(List<Types.Enums.WheelSymbol> wheelSymbols)
         {
             // Find the number of occurrences of each wheel symbol
-            Dictionary<Types.Types.WheelSymbol, int> symbolCount = new Dictionary<Types.Types.WheelSymbol, int>();
-            foreach (Types.Types.WheelSymbol symbol in Enum.GetValues(typeof(Types.Types.WheelSymbol)))
+            Dictionary<Types.Enums.WheelSymbol, int> symbolCount = new Dictionary<Types.Enums.WheelSymbol, int>();
+            foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
             {
                 symbolCount.Add(symbol, wheelSymbols.FindAll(s => s == symbol).Count);
             }
@@ -53,7 +53,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// <summary>
         /// Calculate total winnings for a set of game outcomes.
         /// </summary>
-        public int CalculateTotalWinnings(Dictionary<List<Types.Types.WheelSymbol>, int> runData)
+        public int CalculateTotalWinnings(Dictionary<List<Types.Enums.WheelSymbol>, int> runData)
         {
             int totalWinnings = 0;
             foreach (var element in runData)

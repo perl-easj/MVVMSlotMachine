@@ -41,8 +41,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         public string PlayButtonText
         {
             get { return Configuration.Implementations.Messages.GenerateText(
-                Types.Types.MessageType.Play, 
-                Types.Types.MessagePostProcessing.AllCaps); } 
+                Types.Enums.MessageType.Play, 
+                Types.Enums.MessagePostProcessing.AllCaps); } 
         }
 
         /// <summary>
@@ -52,8 +52,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         public string CreditsText
         {
             get { return Configuration.Implementations.Messages.GenerateText(
-                Types.Types.MessageType.Credits, 
-                Types.Types.MessagePostProcessing.InitialCaps); }
+                Types.Enums.MessageType.Credits, 
+                Types.Enums.MessagePostProcessing.InitialCaps); }
         }
 
         /// <summary>
@@ -71,32 +71,32 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                if (_modelNormalPlay.CurrentNormalPlayState == Types.Types.NormalPlayState.BeforeFirstInteraction)
+                if (_modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.BeforeFirstInteraction)
                 {
                     return Configuration.Implementations.Messages.GenerateText(
-                        Types.Types.MessageType.Ready, 
-                        Types.Types.MessagePostProcessing.InitialCaps);
+                        Types.Enums.MessageType.Ready, 
+                        Types.Enums.MessagePostProcessing.InitialCaps);
                 }
-                else if (_modelNormalPlay.CurrentNormalPlayState == Types.Types.NormalPlayState.Spinning)
+                else if (_modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.Spinning)
                 {
-                    List<Types.Types.MessagePostProcessing> postProcessings = new List<Types.Types.MessagePostProcessing>
+                    List<Types.Enums.MessagePostProcessing> postProcessings = new List<Types.Enums.MessagePostProcessing>
                     {
-                        Types.Types.MessagePostProcessing.InitialCaps,
-                        Types.Types.MessagePostProcessing.AddEllipsis
+                        Types.Enums.MessagePostProcessing.InitialCaps,
+                        Types.Enums.MessagePostProcessing.AddEllipsis
                     };
-                    return Configuration.Implementations.Messages.GenerateText(Types.Types.MessageType.SpinningWheels, postProcessings);
+                    return Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.SpinningWheels, postProcessings);
                 }
                 else if (_modelNormalPlay.CreditsWon > 0)
                 {
                     string youwonText = Configuration.Implementations.Messages.GenerateText(
-                        Types.Types.MessageType.YouWon, 
-                        Types.Types.MessagePostProcessing.InitialCaps);
+                        Types.Enums.MessageType.YouWon, 
+                        Types.Enums.MessagePostProcessing.InitialCaps);
                     string creditText = Configuration.Implementations.Messages.GenerateText(
-                        Types.Types.MessageType.Credit, 
-                        Types.Types.MessagePostProcessing.AddExclamationMark);
+                        Types.Enums.MessageType.Credit, 
+                        Types.Enums.MessagePostProcessing.AddExclamationMark);
                     string creditsText = Configuration.Implementations.Messages.GenerateText(
-                        Types.Types.MessageType.Credits, 
-                        Types.Types.MessagePostProcessing.AddExclamationMark);
+                        Types.Enums.MessageType.Credits, 
+                        Types.Enums.MessagePostProcessing.AddExclamationMark);
 
                     return string.Format("{0} {1} {2}", youwonText, _modelNormalPlay.CreditsWon, _modelNormalPlay.CreditsWon == 1 ? creditText : creditsText);
                 }

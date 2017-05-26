@@ -34,7 +34,7 @@ namespace MVVMSlotMachine.Controllers
         /// </summary>
         public override void Execute(object parameter)
         {
-            if (_modelAutoPlay.CurrentAutoPlayState == Types.Types.AutoPlayState.Running)
+            if (_modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Running)
             {
                 _modelAutoPlay.Cancel();
             }
