@@ -7,8 +7,8 @@
     <ProjectGuid>{0AC88BD5-72EC-42B2-B06E-7D3CE35E2500}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SlotMachineWithUI</RootNamespace>
-    <AssemblyName>SlotMachineWithUI</AssemblyName>
+    <RootNamespace>MVVMSlotMachine</RootNamespace>
+    <AssemblyName>MVVMSlotMachine</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -16,7 +16,8 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>SlotMachineWithUI_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>MVVMSlotMachine_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>8129D5B9D4EE8C925A7EB5576D2A2A78B1EC524D</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
