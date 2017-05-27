@@ -38,7 +38,7 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
-        <Style x:Key="ImageWinningsStyle" TargetType="Image">
+        <Style x:Key="ImageStyle" TargetType="Image">
             <Setter Property="Margin" Value="5,5,5,5"/>
             <Setter Property="Width" Value="40"/>
             <Setter Property="Height" Value="40"/>
@@ -97,120 +97,120 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Bell]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Bell]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Bell]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Bell3]}"/>
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Cherry]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Cherry]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Cherry]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Cherry3]}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Clover]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Clover]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Clover]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Clover3]}"/>                
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Melon]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Melon]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Melon]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Melon3]}"/>                
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                        Source="{Binding WheelSymbolImages[Seven]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                        Source="{Binding WheelSymbolImages[Seven]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                        Source="{Binding WheelSymbolImages[Seven]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Seven3]}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Shoe]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Shoe]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Shoe]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Shoe3]}"/>                
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Bell]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Bell]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Bell2]}"/>
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Cherry]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Cherry]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Cherry2]}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Clover]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Clover]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Clover2]}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Melon]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Melon]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Melon2]}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="4">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Seven]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Seven]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Seven2]}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="5">
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Shoe]}" />
-                <Image Style="{StaticResource ImageWinningsStyle}"
+                <Image Style="{StaticResource ImageStyle}"
                    Source="{Binding WheelSymbolImages[Shoe]}" />
                 <TextBlock Style="{StaticResource TextBlockResultStyle}"
                            Text="{Binding AutoRunDataText[Shoe2]}"/>

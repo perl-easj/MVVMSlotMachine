@@ -1,4 +1,6 @@
-﻿namespace MVVMSlotMachine.Interfaces.Logic
+﻿using MVVMSlotMachine.Types;
+
+namespace MVVMSlotMachine.Interfaces.Logic
 {
     /// <summary>
     /// Interface for analytically calculating a winnings percentage
@@ -15,6 +17,6 @@
         /// Calculate the probability for an outcome containing
         /// the specified number of the specified symbol.
         /// </summary>
-        double ProbabilityForSymbolCount(Types.Enums.WheelSymbol symbol, int count);
+        double ProbabilityForSymbolCount(WheelSymbolCount wsCount);
     }
 }

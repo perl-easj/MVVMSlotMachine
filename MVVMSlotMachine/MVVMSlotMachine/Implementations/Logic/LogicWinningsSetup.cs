@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVVMSlotMachine.Configuration;
-using MVVMSlotMachine.Implementations.Common;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Logic;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Logic
 {
@@ -13,12 +13,12 @@ namespace MVVMSlotMachine.Implementations.Logic
     /// </summary>
     public class LogicWinningsSetup : PropertySource, ILogicWinningsSetup
     {
-        private Dictionary<int, int> _winningsSettings;
+        private Dictionary<WheelSymbolCount, int> _winningsSettings;
 
         #region Constructor
         public LogicWinningsSetup()
         {
-            _winningsSettings = new Dictionary<int, int>();
+            _winningsSettings = new Dictionary<WheelSymbolCount, int>();
             SetDefaultWinnings();
         }
         #endregion
@@ -28,7 +28,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// Retrieve the current winnings settings, only including
         /// combinations paying a non-zero winning
         /// </summary>
-        public Dictionary<int, int> WinningsSettings
+        public Dictionary<WheelSymbolCount, int> WinningsSettings
         {
             get { return _winningsSettings; }
         }
@@ -37,21 +37,18 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// Retrieve the current winnings settings, also including
         /// combinations paying zero winnings
         /// </summary>
-        public Dictionary<int, int> WinningsSettingsComplete
+        public Dictionary<WheelSymbolCount, int> WinningsSettingsComplete
         {
             get
             {
-                Dictionary<int, int> completeWinnings = new Dictionary<int, int>();
+                Dictionary<WheelSymbolCount, int> completeWinnings = new Dictionary<WheelSymbolCount, int>();
 
                 // Iterate over all wheel symbol, and all "count" values equal to
                 // total number of wheels, and total number of wheels minus 1.
-                for (int count = Configuration.Constants.NoOfWheels; count >= Configuration.Constants.NoOfWheels - 1; count--)
+                foreach (WheelSymbolCount item in WheelSymbolCount.All(Constants.NoOfWheels - 1))
                 {
-                    foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
-                    {
-                        int winnings = GetWinnings(symbol, count);
-                        completeWinnings.Add(Common.WheelSymbolConverter.SymbolCountToKey(symbol, count), winnings);
-                    }
+                    int winnings = GetWinnings(item.Symbol, item.Count);
+                    completeWinnings.Add(new WheelSymbolCount(item.Symbol, item.Count), winnings);
                 }
 
                 return completeWinnings;
@@ -64,39 +61,40 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// Retrieve the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        public int GetWinnings(Types.Enums.WheelSymbol symbol, int count)
+        public int GetWinnings(Enums.WheelSymbol symbol, int count)
         {
-            int entryKey = WheelSymbolConverter.SymbolCountToKey(symbol, count);
-            if (!_winningsSettings.ContainsKey(entryKey))
+            WheelSymbolCount entry = new WheelSymbolCount(symbol, count);
+            // int entryKey = WheelSymbolConverter.SymbolCountToKey(symbol, count);
+            if (!_winningsSettings.ContainsKey(entry))
             {
                 return 0;
             }
 
-            return _winningsSettings[entryKey];
+            return _winningsSettings[entry];
         }
 
         /// <summary>
         /// Set the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        public void SetWinnings(Types.Enums.WheelSymbol symbol, int count, int winAmount)
+        public void SetWinnings(Enums.WheelSymbol symbol, int count, int winAmount)
         {
             if (count < 1 || winAmount < 0)
             {
                 throw new ArgumentException(nameof(SetWinnings));
             }
 
-            int entryKey = WheelSymbolConverter.SymbolCountToKey(symbol, count);
-            if (!_winningsSettings.ContainsKey(entryKey))
+            WheelSymbolCount entry = new WheelSymbolCount(symbol, count);
+            if (!_winningsSettings.ContainsKey(entry))
             {
-                _winningsSettings.Add(entryKey, winAmount);
+                _winningsSettings.Add(entry, winAmount);
             }
             else
             {
-                _winningsSettings[entryKey] = winAmount;
+                _winningsSettings[entry] = winAmount;
             }
 
-            OnPropertyChanged(nameof(WinningsSettings)); ;
+            OnPropertyChanged(nameof(WinningsSettings));
         }
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         {
             for (int count = 1; count <= Constants.NoOfWheels; count++)
             {
-                foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
+                foreach (Enums.WheelSymbol symbol in Enum.GetValues(typeof(Enums.WheelSymbol)))
                 {
                     int winnings = Configuration.Implementations.DefaultWinnings(symbol, count);
                     if (winnings > 0)

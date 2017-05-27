@@ -1,5 +1,4 @@
-﻿using MVVMSlotMachine.Configuration;
-using MVVMSlotMachine.Implementations.Properties;
+﻿using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.ViewModels;
 

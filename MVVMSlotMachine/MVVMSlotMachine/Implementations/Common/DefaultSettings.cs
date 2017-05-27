@@ -1,5 +1,6 @@
 using MVVMSlotMachine.Configuration;
 using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Common
 {
@@ -33,34 +34,32 @@ namespace MVVMSlotMachine.Implementations.Common
             get { return 1000000; }
         }
 
-        public Types.Enums.UILanguage Language
+        public Enums.UILanguage Language
         {
-            get { return Types.Enums.UILanguage.English; }
+            get { return Enums.UILanguage.English; }
         }
 
-        public Types.Enums.UIImageSet ImageSet
+        public Enums.UIImageSet ImageSet
         {
-            get { return Types.Enums.UIImageSet.A; }
+            get { return Enums.UIImageSet.A; }
         }
 
-        public int InitialProbability(Types.Enums.WheelSymbol symbol)
+        public int InitialProbability(Enums.WheelSymbol symbol)
         {
-            if (symbol == Types.Enums.WheelSymbol.Bell) return 10;
-            if (symbol == Types.Enums.WheelSymbol.Cherry) return 30;
-            if (symbol == Types.Enums.WheelSymbol.Clover) return 60;
+            if (symbol == Enums.WheelSymbol.Bell) return 10;
+            if (symbol == Enums.WheelSymbol.Cherry) return 30;
+            if (symbol == Enums.WheelSymbol.Clover) return 60;
 
             return 0;
         }
 
-        public int InitialWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols)
+        public int InitialWinnings(Enums.WheelSymbol symbol, int count)
         {
-            int key = WheelSymbolConverter.SymbolCountToKey(symbol, noOfSymbols);
-
-            if (key == WheelSymbolConverter.SymbolCountToKey(Types.Enums.WheelSymbol.Bell, 3)) return 100;
-            if (key == WheelSymbolConverter.SymbolCountToKey(Types.Enums.WheelSymbol.Cherry, 3)) return 10;
-            if (key == WheelSymbolConverter.SymbolCountToKey(Types.Enums.WheelSymbol.Clover, 3)) return 1;
-            if (key == WheelSymbolConverter.SymbolCountToKey(Types.Enums.WheelSymbol.Bell, 2)) return 5;
-            if (key == WheelSymbolConverter.SymbolCountToKey(Types.Enums.WheelSymbol.Cherry, 2)) return 1;
+            if (symbol == Enums.WheelSymbol.Bell && count == 3) return 100;
+            if (symbol == Enums.WheelSymbol.Cherry && count == 3) return 10;
+            if (symbol == Enums.WheelSymbol.Clover && count == 3) return 1;
+            if (symbol == Enums.WheelSymbol.Bell && count == 2) return 5;
+            if (symbol == Enums.WheelSymbol.Cherry && count == 2) return 1;
 
             return 0;
         }

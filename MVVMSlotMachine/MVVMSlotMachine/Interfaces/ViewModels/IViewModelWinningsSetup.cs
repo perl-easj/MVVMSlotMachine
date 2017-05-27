@@ -15,6 +15,7 @@ namespace MVVMSlotMachine.Interfaces.ViewModels
         /// to display in a list-oriented control (e.g. a ListView).
         /// </summary>
         ObservableCollection<ItemViewModelWinningsEntry> WinningsList { get; }
+        ObservableCollection<ItemViewModelWinningsEntry> WinningsListCopy { get; }
 
         /// <summary>
         /// Tracks the winnings specification currently selected by the user.

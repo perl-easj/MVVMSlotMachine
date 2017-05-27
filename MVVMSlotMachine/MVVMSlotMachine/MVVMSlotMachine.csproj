@@ -107,7 +107,6 @@
     <Compile Include="Controllers\SpinControllerCommand.cs" />
     <Compile Include="Implementations\Common\Settings.cs" />
     <Compile Include="Implementations\Common\TickScale.cs" />
-    <Compile Include="Implementations\Common\WheelSymbolConverter.cs" />
     <Compile Include="Implementations\Logic\LogicAnalyticalCalculation.cs" />
     <Compile Include="Implementations\Logic\LogicCalculateWinnings.cs" />
     <Compile Include="Implementations\Logic\LogicProbabilitySetup.cs" />
@@ -157,7 +156,8 @@
     <Compile Include="Types\Enums.cs" />
     <Compile Include="Implementations\ViewModels\ViewModelNormalPlay.cs" />
     <Compile Include="Implementations\ViewModels\ViewModelFacade.cs" />
-    <Compile Include="Types\WheelSymbols.cs" />
+    <Compile Include="Types\WheelSymbolCount.cs" />
+    <Compile Include="Types\WheelSymbolList.cs" />
     <Compile Include="Views\AutoPlay.xaml.cs">
       <DependentUpon>AutoPlay.xaml</DependentUpon>
     </Compile>

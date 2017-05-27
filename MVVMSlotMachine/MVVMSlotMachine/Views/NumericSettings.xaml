@@ -50,20 +50,30 @@
 
                 <StackPanel Orientation="Horizontal" Grid.Column="0"
                             BorderThickness="2" BorderBrush="DarkGray">
-                    <ListView ItemsSource="{Binding WinningsList}"
+                    
+                    <ListView ItemsSource="{Binding WinningsListCopy}"
                               SelectedItem="{Binding WinningsSelected, Mode=TwoWay}"
-                              Width="240">
+                              Width="125">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <Image Width="30" Height="30" Margin="5,5,5,5"
+                                    <Image Width="30" Height="30" Margin="0,5,5,5"
                                        Source="{Binding Image1Source}" />
-                                    <Image Width="30" Height="30" Margin="5,5,5,5"
+                                    <Image Width="30" Height="30" Margin="0,5,5,5"
                                        Source="{Binding Image2Source}" />
-                                    <Image Width="30" Height="30" Margin="5,5,5,5"
+                                    <Image Width="30" Height="30" Margin="0,5,5,5"
                                        Source="{Binding Image3Source}" />
-                                    <TextBlock Margin="15,0,0,0" FontSize="24" 
-                                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <ListView ItemsSource="{Binding WinningsList}"
+                              Width="115">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <TextBlock FontSize="24" VerticalAlignment="Center"
                                            Text="{Binding WinningsAmount}"/>
                                 </StackPanel>
                             </DataTemplate>

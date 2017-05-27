@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.ViewModels
 {
@@ -9,38 +9,60 @@ namespace MVVMSlotMachine.Implementations.ViewModels
     /// </summary>
     public class ItemViewModelWinningsEntry
     {
-        private List<Types.Enums.WheelSymbol> _symbols;
-        private int _winAmount;
+        private readonly WheelSymbolCount _wsCount;
+        private readonly int _winAmount;
 
-        public ItemViewModelWinningsEntry(List<Types.Enums.WheelSymbol> symbols, int winAmount)
+        public ItemViewModelWinningsEntry(WheelSymbolCount wsCount, int winAmount)
         {
-            _symbols = symbols;
+            _wsCount = wsCount;
             _winAmount = winAmount;
         }
 
-        public List<Types.Enums.WheelSymbol> WheelSymbols
+        public Enums.WheelSymbol Symbol
         {
-            get { return _symbols; }
+            get { return _wsCount.Symbol; }
         }
 
-        public string Image1Source
+        public int Count
         {
-            get { return _symbols.Count > 0 ? Configuration.Implementations.WheelImage.GetImageSource(_symbols[0]) : ""; }
-        }
-
-        public string Image2Source
-        {
-            get { return _symbols.Count > 1 ? Configuration.Implementations.WheelImage.GetImageSource(_symbols[1]) : ""; }
-        }
-
-        public string Image3Source
-        {
-            get { return _symbols.Count > 2 ? Configuration.Implementations.WheelImage.GetImageSource(_symbols[2]) : ""; }
+            get { return _wsCount.Count; }
         }
 
         public int WinningsAmount
         {
             get { return _winAmount; }
+        }
+
+        public string Image1Source
+        {
+            get { return Count > 0 ? Configuration.Implementations.WheelImage.GetImageSource(Symbol) : ""; }
+        }
+
+        public string Image2Source
+        {
+            get { return Count > 1 ? Configuration.Implementations.WheelImage.GetImageSource(Symbol) : ""; }
+        }
+
+        public string Image3Source
+        {
+            get { return Count > 2 ? Configuration.Implementations.WheelImage.GetImageSource(Symbol) : ""; }
+        }
+
+        public override bool Equals(object obj)
+        {
+            ItemViewModelWinningsEntry other = (ItemViewModelWinningsEntry)obj;
+
+            if (other != null)
+            {
+                return (Symbol == other.Symbol && Count == other.Count);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return _wsCount.GetHashCode();
         }
     }
 }

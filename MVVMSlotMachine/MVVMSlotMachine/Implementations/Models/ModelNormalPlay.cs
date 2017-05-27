@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MVVMSlotMachine.Controllers;
 using MVVMSlotMachine.Implementations.Properties;
@@ -7,6 +6,7 @@ using MVVMSlotMachine.Interfaces.Common;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Models;
 using MVVMSlotMachine.Interfaces.Properties;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Models
 {
@@ -22,8 +22,8 @@ namespace MVVMSlotMachine.Implementations.Models
         private int _rotationDelayMilliSecs;
 
         private int _noOfCredits;
-        private Dictionary<int, Types.Enums.WheelSymbol> _wheelSymbols;
-        private Types.Enums.NormalPlayState _currentNormalPlayState;        
+        private WheelSymbolList _symbols;
+        private Enums.NormalPlayState _currentNormalPlayState;        
 
         private ICommandExtended _spinCommand;
         private ICommandExtended _addCreditCommand;
@@ -44,12 +44,8 @@ namespace MVVMSlotMachine.Implementations.Models
             _rotationDelayMilliSecs = rotationDelayMilliSecs;
 
             _noOfCredits = initialCredits;
-            CurrentNormalPlayState = Types.Enums.NormalPlayState.BeforeFirstInteraction;
-            _wheelSymbols = new Dictionary<int, Types.Enums.WheelSymbol>();
-            for (int wheelNo = 0; wheelNo < Configuration.Constants.NoOfWheels; wheelNo++)
-            {
-                _wheelSymbols[wheelNo] = Types.Enums.WheelSymbol.Cherry;
-            }
+            _symbols = new WheelSymbolList();
+            CurrentNormalPlayState = Enums.NormalPlayState.BeforeFirstInteraction;
 
             _spinCommand = new SpinControllerCommand(this);
             _addCreditCommand = new AddCreditsControllerCommand(this);
@@ -90,26 +86,21 @@ namespace MVVMSlotMachine.Implementations.Models
         /// </summary>
         public int CreditsWon
         {
-            get { return _logicCalculateWinnings.CalculateWinnings(_wheelSymbols.Values.ToList()); }
+            get { return _logicCalculateWinnings.CalculateWinnings(_symbols ); }
         }
 
         /// <summary>
         /// Gets/sets the wheels symbols currently showing
         /// </summary>
-        public Dictionary<int, Types.Enums.WheelSymbol> WheelSymbols
+        public WheelSymbolList WheelSymbols
         {
-            get { return _wheelSymbols; }
-            private set
-            {
-                _wheelSymbols = value;
-                OnPropertyChanged();
-            }
+            get { return _symbols; }
         }
 
         /// <summary>
         /// Gets/sets the current state of the game session
         /// </summary>
-        public Types.Enums.NormalPlayState CurrentNormalPlayState
+        public Enums.NormalPlayState CurrentNormalPlayState
         {
             get { return _currentNormalPlayState; }
             set
@@ -148,26 +139,12 @@ namespace MVVMSlotMachine.Implementations.Models
         {
             for (int rotation = 0; rotation < _noOfRotationsPerSpin; rotation++)
             {
-                WheelSymbols = DoRotation();
+                _symbols.Rotate(_logicSymbolGenerator);
+                OnPropertyChanged(nameof(WheelSymbols));
                 await Task.Delay(_rotationDelayMilliSecs);
             }
 
             OnPropertyChanged(nameof(CreditsWon));
-        }
-        #endregion
-
-        #region Private methods
-        /// <summary>
-        /// Performs a single "rotation" (i.e. update of wheel symbols)
-        /// of all wheels.
-        /// </summary>
-        private Dictionary<int, Types.Enums.WheelSymbol> DoRotation()
-        {
-            for (int wheelNo = 0; wheelNo < Configuration.Constants.NoOfWheels; wheelNo++)
-            {
-                _wheelSymbols[wheelNo] = _logicSymbolGenerator.GetWheelSymbol();
-            }
-            return _wheelSymbols;
         }
         #endregion
     }

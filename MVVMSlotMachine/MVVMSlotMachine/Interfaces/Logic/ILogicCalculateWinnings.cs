@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Interfaces.Logic
 {
@@ -11,11 +12,11 @@ namespace MVVMSlotMachine.Interfaces.Logic
         /// <summary>
         /// Calculate winnings for a single game outcome.
         /// </summary>
-        int CalculateWinnings(List<Types.Enums.WheelSymbol> wheelSymbols);
+        int CalculateWinnings(WheelSymbolList symbols);
 
         /// <summary>
         /// Calculate total winnings for a set of game outcomes.
         /// </summary>
-        int CalculateTotalWinnings(Dictionary<List<Types.Enums.WheelSymbol>, int> runData);
+        int CalculateTotalWinnings(Dictionary<int, int> runData);
     }
 }

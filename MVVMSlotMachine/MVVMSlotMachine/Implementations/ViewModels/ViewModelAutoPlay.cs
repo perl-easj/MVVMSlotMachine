@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
-using MVVMSlotMachine.Implementations.Common;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Common;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Models;
 using MVVMSlotMachine.Interfaces.Properties;
 using MVVMSlotMachine.Interfaces.ViewModels;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.ViewModels
 {
@@ -67,16 +67,12 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                if (_modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Running)
+                if (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Running)
                 {
-                    return Configuration.Implementations.Messages.GenerateText(
-                        Types.Enums.MessageType.Cancel, 
-                        Types.Enums.MessagePostProcessing.InitialCaps);
+                    return Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Cancel, Enums.MessagePostProcessing.InitialCaps);
                 }
 
-                return Configuration.Implementations.Messages.GenerateText(
-                    Types.Enums.MessageType.Go, 
-                    Types.Enums.MessagePostProcessing.InitialCaps);
+                return Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Go, Enums.MessagePostProcessing.InitialCaps);
             }
         }
 
@@ -88,25 +84,23 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                if (_modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Idle)
+                if (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Idle)
                 {
-                    string paybackText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.PayBack);
-                    string simulatedText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.Simulated);
-                    string runsText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.Spins);
+                    string paybackText = Configuration.Implementations.Messages.GenerateText(Enums.MessageType.PayBack);
+                    string simulatedText = Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Simulated);
+                    string runsText = Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Spins);
 
                     return string.Format("{0:0.00} % {2} ({3}, {1:0,0} {4})",
-                        _modelAutoPlay.PercentPayback, _modelAutoPlay.NoOfRuns, paybackText, simulatedText, runsText);
+                           _modelAutoPlay.PercentPayback, _modelAutoPlay.NoOfRuns, paybackText, simulatedText, runsText);
                 }
-                else if (_modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Running)
+                else if (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Running)
                 {
                     return _modelAutoPlay.PercentCompleted + " % " + 
-                           Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.Done);
+                           Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Done);
                 }
                 else
                 {
-                    return Configuration.Implementations.Messages.GenerateText(
-                        Types.Enums.MessageType.Ready, 
-                        Types.Enums.MessagePostProcessing.InitialCaps);
+                    return Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Ready, Enums.MessagePostProcessing.InitialCaps);
                 }
             }
         }
@@ -126,7 +120,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public Visibility AutoPlayProgressBarVisibility
         {
-            get { return _modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Running ? Visibility.Visible : Visibility.Collapsed; }
+            get { return _modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Running ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         /// <summary>
@@ -136,7 +130,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         public string NoOfRunsText
         {
             get { return string.Format("  {0:0,0} {1}", _modelAutoPlay.NoOfRuns, 
-                         Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.Spins)); }
+                         Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Spins)); }
         }
 
         /// <summary>
@@ -166,37 +160,44 @@ namespace MVVMSlotMachine.Implementations.ViewModels
                     return NullAutoRunData;
                 }
 
-                // Iterate over all relevant combination of wheel symbols and wheel counts.
-                // For each symbol/count combination:
-                // 1) Get the number of entries in the auto-run data
-                // 2) Calculate expected number of entries, according to probability sesttings
-                // 3) Create text entry for the symbol/count combination
-                Dictionary<string, string> autoRunData = new Dictionary<string, string>();
-                for (int count = Configuration.Constants.NoOfWheels; count >= Configuration.Constants.NoOfWheels - 1; count--)
+                // Create auto-run data using symbol/count as key
+                Dictionary<WheelSymbolCount, int> autoRunDataWheelSymbolCount = new Dictionary<WheelSymbolCount, int>();
+                foreach (var item in WheelSymbolCount.All(Configuration.Constants.NoOfWheels - 1))
                 {
-                    foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
+                    autoRunDataWheelSymbolCount.Add(item,0);
+                }
+
+                foreach (var autoRunItem in _modelAutoPlay.AutoRunData)
+                {
+                    foreach (var wsCount in WheelSymbolCount.All(Configuration.Constants.NoOfWheels - 1))
                     {
-                        int key = WheelSymbolConverter.SymbolCountToKey(symbol, count);
-                        int runs = 0;
-
-                        if (_modelAutoPlay.AutoRunData.ContainsKey(key))
+                        // If this auto-run entry matches the symbol/count entry, 
+                        // add the number of runs to that entry.
+                        if (wsCount.Match(new WheelSymbolList(autoRunItem.Key)))
                         {
-                            runs = _modelAutoPlay.AutoRunData[key];
+                            autoRunDataWheelSymbolCount[wsCount] += autoRunItem.Value;
                         }
+                    }                   
+                }
 
-                        string keyStr = Enum.GetName(typeof(Types.Enums.WheelSymbol), symbol) + count;
-                        double runsExpected = _logicAnalyticalCalculation.ProbabilityForSymbolCount(symbol, count) * _modelAutoPlay.NoOfRuns;
+                // Generate texts for each entry, showing the percentage 
+                // of actual outcomes vs expected outcomes
+                Dictionary<string, string> autoRunData = new Dictionary<string, string>();
+                foreach (var wsCount in autoRunDataWheelSymbolCount)
+                {
+                    string keyStr = Enum.GetName(typeof(Enums.WheelSymbol), wsCount.Key.Symbol) + wsCount.Key.Count;
+                    double runsExpected = _logicAnalyticalCalculation.ProbabilityForSymbolCount(wsCount.Key) * _modelAutoPlay.NoOfRuns;
+                    int runsActual = wsCount.Value;
 
-                        if (_modelAutoPlay.PercentCompleted > 0 && runsExpected > 0)
-                        {
-                            double percentOfExpected = (runs / (_modelAutoPlay.PercentCompleted * (runsExpected / 100.0))) * 100.0;
-                            string valStr = string.Format("{0:0.00} % ", percentOfExpected);
-                            autoRunData.Add(keyStr, valStr);
-                        }
-                        else
-                        {
-                            autoRunData.Add(keyStr, "---");
-                        }
+                    if (_modelAutoPlay.PercentCompleted > 0 && runsExpected > 0)
+                    {
+                        double percentOfExpected = (runsActual / (_modelAutoPlay.PercentCompleted * (runsExpected / 100.0))) * 100.0;
+                        string valStr = string.Format("{0:0.00} % ", percentOfExpected);
+                        autoRunData.Add(keyStr, valStr);
+                    }
+                    else
+                    {
+                        autoRunData.Add(keyStr, "---");
                     }
                 }
 
@@ -228,9 +229,9 @@ namespace MVVMSlotMachine.Implementations.ViewModels
                     int noOfWheels = Configuration.Constants.NoOfWheels;
                     for (int count = noOfWheels; count >= noOfWheels - 1; count--)
                     {
-                        foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
+                        foreach (Enums.WheelSymbol symbol in Enum.GetValues(typeof(Enums.WheelSymbol)))
                         {
-                            _nullAutoRunData.Add(Enum.GetName(typeof(Types.Enums.WheelSymbol), symbol) + count, "---");
+                            _nullAutoRunData.Add(Enum.GetName(typeof(Enums.WheelSymbol), symbol) + count, "---");
                         }
                     }
                 }
@@ -247,9 +248,9 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                return (_modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Running && _modelAutoPlay.NoOfRuns < 500000
-                     || _modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.Idle && _modelAutoPlay.PercentCompleted < 100
-                     || _modelAutoPlay.CurrentAutoPlayState == Types.Enums.AutoPlayState.BeforeFirstInteraction);
+                return (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Running && _modelAutoPlay.NoOfRuns < 500000
+                     || _modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Idle && _modelAutoPlay.PercentCompleted < 100
+                     || _modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.BeforeFirstInteraction);
             }
         } 
         #endregion

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using MVVMSlotMachine.Controllers;
-using MVVMSlotMachine.Implementations.Common;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Common;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Models;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Models
 {
@@ -20,12 +19,12 @@ namespace MVVMSlotMachine.Implementations.Models
     public class ModelAutoPlay : PropertySource, IModelAutoPlay
     {
         #region Instance fields
-        private Types.Enums.AutoPlayState _currentAutoPlayState;
+        private Enums.AutoPlayState _currentAutoPlayState;
         private int _noOfRunsInAutoPlay;
         private int _percentCompleted;
         private double _percentPayback;
         private Dictionary<int, int> _autoRunData;
-        private Dictionary<int, Types.Enums.WheelSymbol> _wheelSymbols;
+        private WheelSymbolList _symbols;
 
         private ICommandExtended _autoCommand;
 
@@ -43,12 +42,12 @@ namespace MVVMSlotMachine.Implementations.Models
             ILogicSymbolGenerator logicSymbolGenerator,
             int noOfRunsInAutoPlay)
         {
-            CurrentAutoPlayState = Types.Enums.AutoPlayState.BeforeFirstInteraction;
+            CurrentAutoPlayState = Enums.AutoPlayState.BeforeFirstInteraction;
             NoOfRuns = noOfRunsInAutoPlay;
             PercentCompleted = 0;
             PercentPayback = 100;
             _autoRunData = new Dictionary<int, int>();
-            _wheelSymbols = new Dictionary<int, Types.Enums.WheelSymbol>();
+            _symbols = new WheelSymbolList();
 
             _autoCommand = new AutoPlayControllerCommand(this);
 
@@ -72,7 +71,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Gets/sets the current state of the auto-play session.
         /// </summary>
-        public Types.Enums.AutoPlayState CurrentAutoPlayState
+        public Enums.AutoPlayState CurrentAutoPlayState
         {
             get { return _currentAutoPlayState; }
             set
@@ -94,7 +93,7 @@ namespace MVVMSlotMachine.Implementations.Models
             {
                 _noOfRunsInAutoPlay = value;
                 PercentCompleted = 0;
-                CurrentAutoPlayState = Types.Enums.AutoPlayState.BeforeFirstInteraction;
+                CurrentAutoPlayState = Enums.AutoPlayState.BeforeFirstInteraction;
                 OnPropertyChanged();
             }
         }
@@ -128,12 +127,24 @@ namespace MVVMSlotMachine.Implementations.Models
         }
 
         /// <summary>
-        /// Retrieve the data resulting from the
-        /// most recent auto-play session
+        /// Retrieve data from the most recent - or  
+        /// currently executing - auto-play session
+        /// The retrieval is done thread-safe
         /// </summary>
         public Dictionary<int, int> AutoRunData
         {
-            get { return ConvertAutoRunDataNumericKey(); }
+            get
+            {
+                _mutex.WaitOne();
+                Dictionary<int, int> autoRunDataCopy = new Dictionary<int, int>();
+                foreach (var item in _autoRunData)
+                {
+                    autoRunDataCopy.Add(item.Key, item.Value);
+                }
+                _mutex.ReleaseMutex();
+
+                return autoRunDataCopy;
+            }
         }
 
         /// <summary>
@@ -154,7 +165,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// </summary>
         public void Run(long noOfRuns)
         {
-            CurrentAutoPlayState = Types.Enums.AutoPlayState.Running;
+            CurrentAutoPlayState = Enums.AutoPlayState.Running;
 
             _didCancel = false;
             _percentCompleted = 0;
@@ -199,7 +210,8 @@ namespace MVVMSlotMachine.Implementations.Models
             {
                 // Update auto-run data with exclusive access
                 _mutex.WaitOne();
-                AddToAutoRunData(SpinNoDelay().Values.ToList());
+                _symbols.Rotate(_logicSymbolGenerator);
+                AddToAutoRunData(_symbols);
                 _mutex.ReleaseMutex();
 
                 // Report progress
@@ -228,15 +240,15 @@ namespace MVVMSlotMachine.Implementations.Models
             if (_didCancel)
             {
                 PercentPayback = 0;
-                CurrentAutoPlayState = Types.Enums.AutoPlayState.BeforeFirstInteraction;
+                CurrentAutoPlayState = Enums.AutoPlayState.BeforeFirstInteraction;
             }
             // Normal completion; calculate final payback percentage, and enter idle state
             else
             {
-                int autoRunWinnings = _logicCalculateWinnings.CalculateTotalWinnings(ConvertAutoRunDataSymbolsKey());
+                int autoRunWinnings = _logicCalculateWinnings.CalculateTotalWinnings(_autoRunData);
                 long runsCompleted = (long)runWorkerCompletedEventArgs.Result;
                 PercentPayback = (autoRunWinnings * 100.0) / (runsCompleted * 1.0);
-                CurrentAutoPlayState = Types.Enums.AutoPlayState.Idle;
+                CurrentAutoPlayState = Enums.AutoPlayState.Idle;
             }
         }
 
@@ -259,90 +271,18 @@ namespace MVVMSlotMachine.Implementations.Models
         }
 
         /// <summary>
-        /// Perform a single spin of the wheels, without any delays
-        /// </summary>
-        private Dictionary<int, Types.Enums.WheelSymbol> SpinNoDelay()
-        {
-            for (int wheelNo = 0; wheelNo < Configuration.Constants.NoOfWheels; wheelNo++)
-            {
-                _wheelSymbols[wheelNo] = _logicSymbolGenerator.GetWheelSymbol();
-            }
-
-            return _wheelSymbols;
-        }
-
-        /// <summary>
         /// Amend the auto-run data with the specified wheel symbols,
         /// which is the outcome of a single spin. This update should be 
         /// done with exclusive access, to avoid threading issues.
         /// </summary>
-        private void AddToAutoRunData(List<Types.Enums.WheelSymbol> wheelSymbols)
+        private void AddToAutoRunData(WheelSymbolList symbols)
         {
-            int key = WheelSymbolConverter.WheelSymbolsToKey(wheelSymbols);
-            if (!_autoRunData.ContainsKey(key))
+            if (!_autoRunData.ContainsKey(symbols.NumericKey))
             {
-                _autoRunData.Add(key, 0);
+                _autoRunData.Add(symbols.NumericKey, 0);
             }
-            _autoRunData[key]++;
+            _autoRunData[symbols.NumericKey]++;
         }
-
-        /// <summary>
-        /// Converts the auto-run data to a format which can be processed
-        /// by the winnings calculation logic. The conversion is done with
-        /// exclusive data access, to avoid threading issues.
-        /// </summary>
-        private Dictionary<List<Types.Enums.WheelSymbol>, int> ConvertAutoRunDataSymbolsKey()
-        {
-            var convertedData = new Dictionary<List<Types.Enums.WheelSymbol>, int>();
-
-            _mutex.WaitOne();
-            foreach (var element in _autoRunData)
-            {
-                convertedData.Add(WheelSymbolConverter.KeyToWheelSymbols(element.Key), element.Value);
-            }
-            _mutex.ReleaseMutex();
-
-            return convertedData;
-        }
-
-        /// <summary>
-        /// Converts the auto-run data to a format which can be used
-        /// by the view model. The conversion is done with exclusive
-        /// data access, to avoid threading issues.
-        /// </summary>
-        private Dictionary<int, int> ConvertAutoRunDataNumericKey()
-        {
-            var convertedData = new Dictionary<int, int>();
-
-            _mutex.WaitOne();
-            foreach (var element in _autoRunData)
-            {
-                List<Types.Enums.WheelSymbol> symbols = WheelSymbolConverter.KeyToWheelSymbols(element.Key);
-
-                Dictionary<Types.Enums.WheelSymbol, int> symbolCount = new Dictionary<Types.Enums.WheelSymbol, int>();
-                foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
-                {
-                    symbolCount.Add(symbol, symbols.FindAll(s => s == symbol).Count);
-                }
-
-                foreach (var item in symbolCount)
-                {
-                    if (item.Value > 1)
-                    {
-                        int key = WheelSymbolConverter.SymbolCountToKey(item.Key, item.Value);
-                        if (!convertedData.ContainsKey(key))
-                        {
-                            convertedData.Add(key, 0);
-                        }
-
-                        convertedData[key] += element.Value;
-                    }
-                }
-            }
-            _mutex.ReleaseMutex();
-
-            return convertedData;
-        } 
         #endregion
     }
 }

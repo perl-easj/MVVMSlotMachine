@@ -30,8 +30,8 @@ namespace MVVMSlotMachine.Interfaces.Models
         double PercentPayback { get; }
 
         /// <summary>
-        /// Retrieve the data resulting from the
-        /// most recent auto-play session
+        /// Retrieve data from the most recent - or  
+        /// currently executing - auto-play session
         /// </summary>
         Dictionary<int, int> AutoRunData { get; }
 

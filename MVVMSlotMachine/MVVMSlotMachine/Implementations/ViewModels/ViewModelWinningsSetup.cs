@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MVVMSlotMachine.Implementations.Common;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Common;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Properties;
 using MVVMSlotMachine.Interfaces.ViewModels;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.ViewModels
 {
@@ -17,8 +17,9 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         #region Instance fields
         private ILogicWinningsSetup _logicWinningsSetup;
         private ITickScale _tickScale;
-        private ItemViewModelWinningsEntry _itemViewModelWinningsEntry;
+        private ItemViewModelWinningsEntry _entry;
         private ObservableCollection<ItemViewModelWinningsEntry> _winList;
+        private ObservableCollection<ItemViewModelWinningsEntry> _winListCopy;
         #endregion
 
         #region Constructors
@@ -30,8 +31,9 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             _logicWinningsSetup = logicWinningsSetup;
             _tickScale = tickScale;
-            _itemViewModelWinningsEntry = null;
+            _entry = null;
             _winList = new ObservableCollection<ItemViewModelWinningsEntry>();
+            _winListCopy = null;
         }
 
         public ViewModelWinningsSetup() :
@@ -51,13 +53,30 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                _winList.Clear();
-                foreach (var winEntry in _logicWinningsSetup.WinningsSettingsComplete)
+                 _winList.Clear();
+                foreach (var item in _logicWinningsSetup.WinningsSettingsComplete)
                 {
-                    _winList.Add(new ItemViewModelWinningsEntry(WheelSymbolConverter.KeyToWheelSymbols(winEntry.Key), winEntry.Value));
+                    _winList.Add(new ItemViewModelWinningsEntry(item.Key, item.Value));
                 }
 
                 return _winList;
+            }
+        }
+
+        public ObservableCollection<ItemViewModelWinningsEntry> WinningsListCopy
+        {
+            get
+            {
+                if (_winListCopy == null)
+                {
+                    _winListCopy = new ObservableCollection<ItemViewModelWinningsEntry>();
+                    foreach (var item in _logicWinningsSetup.WinningsSettingsComplete)
+                    {
+                        _winListCopy.Add(new ItemViewModelWinningsEntry(item.Key, item.Value));
+                    }
+                }
+
+                return _winListCopy;
             }
         }
 
@@ -66,14 +85,14 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public ItemViewModelWinningsEntry WinningsSelected
         {
-            get { return _itemViewModelWinningsEntry; }
+            get { return _entry; }
             set
             {
                 // Selection is kept even if selection becomes null,
                 // to enable continuous update of an entry
                 if (value != null)
                 {
-                    _itemViewModelWinningsEntry = value;
+                    _entry = value;
                 }
                 OnPropertyChanged(nameof(WinningsTick));
                 OnPropertyChanged(nameof(WinningsAmount));
@@ -84,34 +103,29 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// Tracks the setting of a ticker-based control
         /// (e.g. a Slider) for setting the winnings amount 
         /// for the currently selected winnings entry.
-        /// Zero is returned if no entry is sselected.
+        /// Zero is returned if no entry is selected.
         /// </summary>
         public int WinningsTick
         {
             get
             {
-                if (_itemViewModelWinningsEntry == null)
+                if (_entry == null)
                 {
                     return 0;
                 }
 
-                return _tickScale.ScaleToTick(_logicWinningsSetup.GetWinnings(
-                    _itemViewModelWinningsEntry.WheelSymbols[0],
-                    _itemViewModelWinningsEntry.WheelSymbols.Count));
+                return _tickScale.ScaleToTick(_logicWinningsSetup.GetWinnings(_entry.Symbol, _entry.Count));
             }
             set
             {
                 int newWinnings = _tickScale.TickToScale(value);
-                if (_itemViewModelWinningsEntry != null)
+                if (_entry != null)
                 {
-                    _logicWinningsSetup.SetWinnings(
-                        _itemViewModelWinningsEntry.WheelSymbols[0],
-                        _itemViewModelWinningsEntry.WheelSymbols.Count, newWinnings);
-                    UpdateItem(_itemViewModelWinningsEntry.WheelSymbols, newWinnings);
+                    _logicWinningsSetup.SetWinnings(_entry.Symbol, _entry.Count, newWinnings);
+                    UpdateItem(new WheelSymbolCount(_entry.Symbol, _entry.Count), newWinnings);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(WinningsAmount));
                 }
-
             }
         }
 
@@ -123,14 +137,12 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         {
             get
             {
-                if (_itemViewModelWinningsEntry == null)
+                if (_entry == null)
                 {
                     return 0;
                 }
 
-                return _logicWinningsSetup.GetWinnings(
-                    _itemViewModelWinningsEntry.WheelSymbols[0],
-                    _itemViewModelWinningsEntry.WheelSymbols.Count);
+                return _logicWinningsSetup.GetWinnings(_entry.Symbol, _entry.Count);
             }
         }
 
@@ -147,43 +159,22 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// <summary>
         /// Update the winnings entry corresponding to the specified wheel symbols.
         /// </summary>
-        private void UpdateItem(List<Types.Enums.WheelSymbol> symbols, int newWinnings)
+        private void UpdateItem(WheelSymbolCount wsCount, int newWinnings)
         {
+            ItemViewModelWinningsEntry entry = new ItemViewModelWinningsEntry(wsCount, newWinnings);
+
             for (int index = 0; index < _winList.Count; index++)
             {
-                if (CompareSymbols(symbols, _winList[index].WheelSymbols))
+                if (_winList[index].Equals(entry))
                 {
                     // We found the matching entry, so update it by deleting
                     // and re-inserting with the updated winnings amount.
                     _winList.RemoveAt(index);
-                    _winList.Insert(index, new ItemViewModelWinningsEntry(symbols, newWinnings));
+                    _winList.Insert(index, entry);
                     return;
                 }
             }
         }
-
-        /// <summary>
-        /// Determines if two lists of wheel symbols are equal. 
-        /// This is defined as the lists having the same length AND
-        /// all symbols match at each position in the lists
-        /// </summary>
-        private bool CompareSymbols(List<Types.Enums.WheelSymbol> symbolsA, List<Types.Enums.WheelSymbol> symbolsB)
-        {
-            if (symbolsA.Count != symbolsB.Count)
-            {
-                return false;
-            }
-
-            for (int index = 0; index < symbolsA.Count; index++)
-            {
-                if (symbolsA[index] != symbolsB[index])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        } 
         #endregion
     }
 }

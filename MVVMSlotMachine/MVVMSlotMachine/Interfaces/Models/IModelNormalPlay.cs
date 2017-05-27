@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Interfaces.Models
 {
@@ -22,12 +22,12 @@ namespace MVVMSlotMachine.Interfaces.Models
         /// <summary>
         /// Retrieves the wheels symbols currently showing
         /// </summary>
-        Dictionary<int, Types.Enums.WheelSymbol> WheelSymbols { get; }
+        WheelSymbolList WheelSymbols { get; }
 
         /// <summary>
         /// Current state of the game session
         /// </summary>
-        Types.Enums.NormalPlayState CurrentNormalPlayState { get; set; }
+        Enums.NormalPlayState CurrentNormalPlayState { get; set; }
 
         /// <summary>
         /// Property to retrieve the command for initiating

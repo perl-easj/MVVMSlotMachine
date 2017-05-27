@@ -114,9 +114,9 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             get
             {
                 Dictionary<int, string> imageSources = new Dictionary<int, string>();
-                foreach (var item in _modelNormalPlay.WheelSymbols)
+                for (int index = 0; index < _modelNormalPlay.WheelSymbols.Count; index++)
                 {
-                    imageSources.Add(item.Key, Configuration.Implementations.WheelImage.GetImageSource(item.Value));
+                    imageSources.Add(index, Configuration.Implementations.WheelImage.GetImageSource(_modelNormalPlay.WheelSymbols[index]));
                 }
 
                 return imageSources;

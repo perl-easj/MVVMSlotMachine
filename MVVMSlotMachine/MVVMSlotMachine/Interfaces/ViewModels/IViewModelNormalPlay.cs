@@ -32,8 +32,8 @@ namespace MVVMSlotMachine.Interfaces.ViewModels
         string StatusText { get; }
 
         /// <summary>
-        /// Retrieves the image sources for the currently 
-        /// active set of wheel symbol images.
+        /// Retrieves the image sources for the wheel symbols
+        /// currently showing.
         /// </summary>
         Dictionary<int, string> WheelSource { get; }
 

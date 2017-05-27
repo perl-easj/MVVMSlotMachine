@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Interfaces.Logic
 {
@@ -12,25 +13,25 @@ namespace MVVMSlotMachine.Interfaces.Logic
         /// Retrieve the current winnings settings, only including
         /// combinations paying a non-zero winning
         /// </summary>
-        Dictionary<int, int> WinningsSettings { get; }
+        Dictionary<WheelSymbolCount, int> WinningsSettings { get; }
 
         /// <summary>
         /// Retrieve the current winnings settings, also including
         /// combinations paying zero winnings
         /// </summary>
-        Dictionary<int, int> WinningsSettingsComplete { get; }
+        Dictionary<WheelSymbolCount, int> WinningsSettingsComplete { get; }
 
         /// <summary>
         /// Retrieve the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        int GetWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols);
+        int GetWinnings(Enums.WheelSymbol symbol, int noOfSymbols);
 
         /// <summary>
         /// Set the winning amount for an outcome containing the
         /// specified number of the specified symbol.
         /// </summary>
-        void SetWinnings(Types.Enums.WheelSymbol symbol, int noOfSymbols, int winAmount);
+        void SetWinnings(Enums.WheelSymbol symbol, int noOfSymbols, int winAmount);
 
         /// <summary>
         /// Set the winnings to the default winnings.

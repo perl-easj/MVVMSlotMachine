@@ -231,6 +231,11 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             get { return _viewModelWinningsSetup.WinningsList; }
         }
 
+        public ObservableCollection<ItemViewModelWinningsEntry> WinningsListCopy
+        {
+            get { return _viewModelWinningsSetup.WinningsListCopy; }
+        }
+
         public ItemViewModelWinningsEntry WinningsSelected
         {
             get { return _viewModelWinningsSetup.WinningsSelected; }

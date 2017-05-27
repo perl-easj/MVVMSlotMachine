@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using MVVMSlotMachine.Implementations.Common;
-using MVVMSlotMachine.Interfaces.Logic;
+﻿using MVVMSlotMachine.Interfaces.Logic;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Logic
 {
@@ -12,24 +11,20 @@ namespace MVVMSlotMachine.Implementations.Logic
     {
         #region Instance fields
         private ILogicWinningsSetup _logicWinningsSetup;
-        private ILogicCalculateWinnings _logicCalculateWinnings;
         private ILogicProbabilitySetup _logicProbabilitySetup; 
         #endregion
 
         #region Constructors
         public LogicAnalyticalCalculation(
             ILogicWinningsSetup logicWinningsSetup,
-            ILogicCalculateWinnings logicCalculateWinnings,
             ILogicProbabilitySetup logicProbabilitySetup)
         {
             _logicWinningsSetup = logicWinningsSetup;
-            _logicCalculateWinnings = logicCalculateWinnings;
             _logicProbabilitySetup = logicProbabilitySetup;
         }
 
         public LogicAnalyticalCalculation() 
             : this(Configuration.Implementations.LogicWinningsSetup, 
-                   Configuration.Implementations.LogicCalculateWinnings, 
                    Configuration.Implementations.LogicProbabilitySetup) 
         {
         }
@@ -50,13 +45,11 @@ namespace MVVMSlotMachine.Implementations.Logic
             //    3) Amend the accumulated winnings with the contribution from this entry
             foreach (var item in _logicWinningsSetup.WinningsSettings)
             {
-                List<Types.Enums.WheelSymbol> symbols = WheelSymbolConverter.KeyToWheelSymbols(item.Key);
-                int winnings = _logicCalculateWinnings.CalculateWinnings(symbols);
-
+                int winnings = item.Value;
                 if (winnings > 0)
                 {
                     // We assume all symbols in winnings entry are identical
-                    accumulatedWinnings += (winnings * ProbabilityForSymbolCount(symbols[0], symbols.Count));
+                    accumulatedWinnings += (winnings * ProbabilityForSymbolCount(item.Key));
                 }
             }
 
@@ -67,25 +60,25 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// Calculate the probability for an outcome containing
         /// the specified number of the specified symbol.
         /// </summary>
-        public double ProbabilityForSymbolCount(Types.Enums.WheelSymbol symbol, int count)
+        public double ProbabilityForSymbolCount(WheelSymbolCount wsCount)
         {
             double probability = 1.0;
-            int probabilityPercent = _logicProbabilitySetup.GetProbability(symbol);
+            int probabilityPercent = _logicProbabilitySetup.GetProbability(wsCount.Symbol);
 
             // Probability for symbol to appear "count" times
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < wsCount.Count; i++)
             {
                 probability = probability * (probabilityPercent * 1.0) / 100.0;
             }
 
             // Probability for symbol NOT to appear in rest of symbols
-            for (int i = 0; i < Configuration.Constants.NoOfWheels - count; i++)
+            for (int i = 0; i < Configuration.Constants.NoOfWheels - wsCount.Count; i++)
             {
                 probability = probability * ((100 - probabilityPercent) * 1.0) / 100.0;
             }
 
             // Multiply by number of ways this outcome can appear
-            probability = probability * Combinations(Configuration.Constants.NoOfWheels, count);
+            probability = probability * Combinations(Configuration.Constants.NoOfWheels, wsCount.Count);
 
             return probability;
         } 

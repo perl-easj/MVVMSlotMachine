@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MVVMSlotMachine.Interfaces.Logic;
+using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Logic
 {
@@ -29,21 +29,12 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// <summary>
         /// Calculate winnings for a single game outcome.
         /// </summary>
-        public int CalculateWinnings(List<Types.Enums.WheelSymbol> wheelSymbols)
+        public int CalculateWinnings(WheelSymbolList symbols)
         {
-            // Find the number of occurrences of each wheel symbol
-            Dictionary<Types.Enums.WheelSymbol, int> symbolCount = new Dictionary<Types.Enums.WheelSymbol, int>();
-            foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
-            {
-                symbolCount.Add(symbol, wheelSymbols.FindAll(s => s == symbol).Count);
-            }
-
-            // Find the winnings associated with each symbol/count entry.
-            // Only use the winnings with the highest amount.
             int winningsAmount = 0;
-            foreach (var item in symbolCount)
+            foreach (var item in symbols.WheelSymbolCounts)
             {
-                int newWinnings = _logicWinningsSetup.GetWinnings(item.Key, item.Value);
+                int newWinnings = _logicWinningsSetup.GetWinnings(item.Symbol, item.Count);
                 winningsAmount = newWinnings > winningsAmount ? newWinnings : winningsAmount;
             }
 
@@ -53,12 +44,12 @@ namespace MVVMSlotMachine.Implementations.Logic
         /// <summary>
         /// Calculate total winnings for a set of game outcomes.
         /// </summary>
-        public int CalculateTotalWinnings(Dictionary<List<Types.Enums.WheelSymbol>, int> runData)
+        public int CalculateTotalWinnings(Dictionary<int, int> runData)
         {
             int totalWinnings = 0;
             foreach (var element in runData)
             {
-                totalWinnings += CalculateWinnings(element.Key) * element.Value;
+                totalWinnings += CalculateWinnings(new WheelSymbolList(element.Key)) * element.Value;
             }
 
             return totalWinnings;
