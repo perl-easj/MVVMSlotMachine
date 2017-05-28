@@ -5,23 +5,18 @@ using MVVMSlotMachine.Types;
 namespace MVVMSlotMachine.Implementations.Logic
 {
     /// <summary>
-    /// This class contain the logic for calculating winnings, 
-    /// either for a single game outcome, or a set of game outcome data. 
+    /// This class contain the logic for calculating winnings, either
+    /// for a single game outcome, or a set of game outcome data. 
     /// The current winnings settings are used.
     /// </summary>
     public class LogicCalculateWinnings : ILogicCalculateWinnings
     {
         private ILogicWinningsSetup _logicWinningsSetup;
 
-        #region Constructors
+        #region Constructor
         public LogicCalculateWinnings(ILogicWinningsSetup logicWinningsSetup)
         {
             _logicWinningsSetup = logicWinningsSetup;
-        }
-
-        public LogicCalculateWinnings()
-            : this(Configuration.Implementations.LogicWinningsSetup)
-        {
         }
         #endregion
 
@@ -47,9 +42,9 @@ namespace MVVMSlotMachine.Implementations.Logic
         public int CalculateTotalWinnings(Dictionary<int, int> runData)
         {
             int totalWinnings = 0;
-            foreach (var element in runData)
+            foreach (var item in runData)
             {
-                totalWinnings += CalculateWinnings(new WheelSymbolList(element.Key)) * element.Value;
+                totalWinnings += CalculateWinnings(new WheelSymbolList(item.Key)) * item.Value;
             }
 
             return totalWinnings;

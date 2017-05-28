@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Logic;
+using MVVMSlotMachine.Interfaces.Settings;
 
 namespace MVVMSlotMachine.Implementations.Logic
 {
@@ -12,10 +13,12 @@ namespace MVVMSlotMachine.Implementations.Logic
     public class LogicProbabilitySetup : PropertySource, ILogicProbabilitySetup
     {
         private Dictionary<Types.Enums.WheelSymbol, int> _probabilitySettings;
+        private ICompileTimeSettings _compileTimeSettings;
 
         #region Constructor
-        public LogicProbabilitySetup()
+        public LogicProbabilitySetup(ICompileTimeSettings compileTimeSettings)
         {
+            _compileTimeSettings = compileTimeSettings;
             _probabilitySettings = new Dictionary<Types.Enums.WheelSymbol, int>();
             SetDefaultProbabilities();
         }
@@ -71,7 +74,7 @@ namespace MVVMSlotMachine.Implementations.Logic
         {
             foreach (Types.Enums.WheelSymbol symbol in Enum.GetValues(typeof(Types.Enums.WheelSymbol)))
             {
-                _probabilitySettings[symbol] = Configuration.Implementations.DefaultProbability(symbol);
+                _probabilitySettings[symbol] = _compileTimeSettings.InitialProbability(symbol);
             }
         }
         #endregion

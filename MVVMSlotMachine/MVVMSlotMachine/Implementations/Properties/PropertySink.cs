@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 using MVVMSlotMachine.Interfaces.Properties;
 
 namespace MVVMSlotMachine.Implementations.Properties
@@ -23,11 +23,11 @@ namespace MVVMSlotMachine.Implementations.Properties
         private Dictionary<string, List<ICommandExtended>> _commandDependencies;
         private Dictionary<string, List<string>> _propertyDependencies;
 
+        #region Constructors
         /// <summary>
         /// The constructor registers the object at all 
         /// of the specified property sources.
         /// </summary>
-        /// <param name="propertySources"></param>
         public PropertySink(List<IPropertySource> propertySources)
         {
             _commandDependencies = new Dictionary<string, List<ICommandExtended>>();
@@ -44,7 +44,9 @@ namespace MVVMSlotMachine.Implementations.Properties
             : this(new List<IPropertySource> { propertySource })
         {
         }
+        #endregion
 
+        #region Public methods
         /// <summary>
         /// Adds a single property dependency.
         /// </summary>
@@ -70,7 +72,9 @@ namespace MVVMSlotMachine.Implementations.Properties
 
             _commandDependencies[propertyName].Add(command);
         }
+        #endregion
 
+        #region Private methods
         /// <summary>
         /// Registers the object at all of the specified property sources, such that
         /// the OnSourcePropertyChanged method will be called whenever one of the
@@ -112,6 +116,7 @@ namespace MVVMSlotMachine.Implementations.Properties
                 }
             }
         }
+        #endregion
 
         #region OnPropertyChanged code (extended with call to NotifyCommands)
         public event PropertyChangedEventHandler PropertyChanged;

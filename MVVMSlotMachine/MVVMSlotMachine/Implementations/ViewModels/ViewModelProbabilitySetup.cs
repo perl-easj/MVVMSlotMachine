@@ -15,7 +15,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
     {
         private ILogicProbabilitySetup _logicProbabilitySetup;
 
-        #region Constructors
+        #region Constructor
         public ViewModelProbabilitySetup(List<IPropertySource> propertySources, ILogicProbabilitySetup logicProbabilitySetup)
             : base(propertySources)
         {
@@ -27,12 +27,6 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             AddPropertyDependency(nameof(ILogicProbabilitySetup.ProbabilitySettings), nameof(IViewModelProbabilitySetup.ProbMelon));
             AddPropertyDependency(nameof(ILogicProbabilitySetup.ProbabilitySettings), nameof(IViewModelProbabilitySetup.ProbSeven));
             AddPropertyDependency(nameof(ILogicProbabilitySetup.ProbabilitySettings), nameof(IViewModelProbabilitySetup.ProbShoe));
-        }
-
-        public ViewModelProbabilitySetup()
-            : this(Configuration.Implementations.ViewModelProbabilitySetupPropertySources, 
-                   Configuration.Implementations.LogicProbabilitySetup)
-        {
         }
         #endregion
 
@@ -96,7 +90,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public Dictionary<string, string> WheelSymbolImages
         {
-            get { return Configuration.Implementations.WheelImage.GetAllImageSources(); }
+            get { return Configuration.Setup.RunTimeSettings.WheelImage.GetAllImageSources(); }
         } 
         #endregion
     }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MVVMSlotMachine.Controllers;
+using MVVMSlotMachine.Implementations.Controllers;
 using MVVMSlotMachine.Implementations.Properties;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Models;
 using MVVMSlotMachine.Interfaces.Properties;
@@ -32,7 +32,7 @@ namespace MVVMSlotMachine.Implementations.Models
         private ILogicSymbolGenerator _logicSymbolGenerator;
         #endregion
 
-        #region Constructors
+        #region Constructor
         public ModelNormalPlay(
             ILogicCalculateWinnings logicCalculateWinnings,
             ILogicSymbolGenerator logicSymbolGenerator, 
@@ -55,15 +55,6 @@ namespace MVVMSlotMachine.Implementations.Models
 
             AddCommandDependency(nameof(IModelNormalPlay.CurrentNormalPlayState), _spinCommand);
             AddCommandDependency(nameof(IModelNormalPlay.CurrentNormalPlayState), _addCreditCommand);
-        }
-
-        public ModelNormalPlay()
-            : this(Configuration.Implementations.LogicCalculateWinnings, 
-                   Configuration.Implementations.LogicSymbolGenerator,
-                   Configuration.Implementations.Settings.InitialCredits,
-                   Configuration.Implementations.Settings.NoOfRotationsPerSpin,
-                   Configuration.Implementations.Settings.RotationDelayMilliSecs)
-        {
         }
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using MVVMSlotMachine.Implementations.Properties;
+﻿using MVVMSlotMachine.Configuration;
+using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.ViewModels;
 
@@ -12,15 +13,10 @@ namespace MVVMSlotMachine.Implementations.ViewModels
     {
         private ILogicAnalyticalCalculation _logicAnalyticalCalculation;
 
-        #region Constructors
+        #region Constructor
         public ViewModelAnalyticalCalculation(ILogicAnalyticalCalculation logicAnalyticalCalculation)
         {
             _logicAnalyticalCalculation = logicAnalyticalCalculation;
-        }
-
-        public ViewModelAnalyticalCalculation() 
-            : this(Configuration.Implementations.LogicAnalyticalCalculation)
-        {
         }
         #endregion
 
@@ -33,8 +29,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             get
             {
                 double percent = _logicAnalyticalCalculation.CalculatePaybackPercentage();
-                string paybackText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.PayBack);
-                string calculatedText = Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.Calculated);
+                string paybackText = Setup.RunTimeSettings.Messages.GenerateText(Types.Enums.MessageType.PayBack);
+                string calculatedText = Setup.RunTimeSettings.Messages.GenerateText(Types.Enums.MessageType.Calculated);
 
                 return string.Format("{0:0.00} % {1} ({2})", percent, paybackText, calculatedText);
             }

@@ -1,136 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using MVVMSlotMachine.Implementations.Common;
+﻿using System.Collections.Generic;
 using MVVMSlotMachine.Implementations.Logic;
-using MVVMSlotMachine.Implementations.Messages;
 using MVVMSlotMachine.Implementations.Models;
+using MVVMSlotMachine.Implementations.Settings;
 using MVVMSlotMachine.Implementations.ViewModels;
-using MVVMSlotMachine.Implementations.WheelImages;
-using MVVMSlotMachine.Interfaces.Common;
-using MVVMSlotMachine.Interfaces.Messages;
 using MVVMSlotMachine.Interfaces.Properties;
-using MVVMSlotMachine.Interfaces.WheelImages;
+using MVVMSlotMachine.Interfaces.Settings;
 
 namespace MVVMSlotMachine.Configuration
 {
     /// <summary>
-    /// Responsibilities:
-    /// 1) Chooses specific implementations of interfaces
-    /// 2) Establishes dependecies between implementations
+    /// This class chooses specific implementations of interfaces, and establishes
+    /// dependencies between implementations. In SOLID terms, this class acts as
+    /// the Composition Root.
     /// </summary>
     public class DependencyInjector
     {
-        #region Setup method
         /// <summary>
-        /// Setup chooses specific implementations of all interfaces,
+        /// Chooses specific implementations of all interfaces,
         /// as well as specific values for numeric settings.
         /// </summary>
-        public void Setup()
+        public void SetDependencies()
         {
-            #region Default setup
-            ISettingsReadOnly settings = new DefaultSettings();
-            Implementations.Messages = MessagesFactory(settings.Language);
-            Implementations.WheelImage = WheelImageFactory(settings.ImageSet);
+            #region Settings setup
+            DefaultSettings defaultSettings = new DefaultSettings();
+            ICompileTimeSettings compileTimeSettings = new CompileTimeSettings(defaultSettings);
+            Setup.RunTimeSettings = new RunTimeSettings(defaultSettings);
             #endregion
 
-            #region Logic/Model setup
-            LogicWinningsSetup logicWinningsSetup = new LogicWinningsSetup();
-            LogicProbabilitySetup logicProbabilitySetup = new LogicProbabilitySetup();
-            Implementations.LogicWinningsSetup = logicWinningsSetup;
-            Implementations.LogicProbabilitySetup = logicProbabilitySetup;
+            #region Logic setup
+            LogicWinningsSetup logicWinningsSetup = new LogicWinningsSetup(compileTimeSettings);
+            LogicProbabilitySetup logicProbabilitySetup = new LogicProbabilitySetup(compileTimeSettings);
+            LogicSymbolGenerator logicSymbolGenerator = new LogicSymbolGenerator(logicProbabilitySetup);
+            LogicCalculateWinnings logicCalculateWinnings = new LogicCalculateWinnings(logicWinningsSetup);
+            LogicAnalyticalCalculation logicAnalyticalCalculation = new LogicAnalyticalCalculation(logicWinningsSetup, logicProbabilitySetup);
+            #endregion
 
-            LogicSymbolGenerator logicSymbolGenerator = new LogicSymbolGenerator();
-            LogicCalculateWinnings logicCalculateWinnings = new LogicCalculateWinnings();
-            Implementations.LogicSymbolGenerator = logicSymbolGenerator;
-            Implementations.LogicCalculateWinnings = logicCalculateWinnings;
-
-            LogicAnalyticalCalculation logicAnalyticalCalculation = new LogicAnalyticalCalculation();
-            Implementations.LogicAnalyticalCalculation = logicAnalyticalCalculation;
-
-            ModelAutoPlay modelAutoPlay = new ModelAutoPlay();
-            ModelNormalPlay modelNormalPlay = new ModelNormalPlay();
-            Implementations.ModelAutoPlay = modelAutoPlay;
-            Implementations.ModelNormalPlay = modelNormalPlay;
+            #region Model setup
+            ModelAutoPlay modelAutoPlay = new ModelAutoPlay(logicCalculateWinnings, logicSymbolGenerator,
+                compileTimeSettings.NoOfRunsInAutoPlay,
+                compileTimeSettings.AutoPlayUpdateThreshold);
+            ModelNormalPlay modelNormalPlay = new ModelNormalPlay(logicCalculateWinnings, logicSymbolGenerator,
+                compileTimeSettings.InitialCredits,
+                compileTimeSettings.NoOfRotationsPerSpin,
+                compileTimeSettings.RotationDelayMilliSecs);
             #endregion
 
             #region Property sources setup
-            List<IPropertySource> viewModelWinningsSetupPropertySources = new List<IPropertySource> { logicWinningsSetup };
-            List<IPropertySource> viewModelProbabilitySetupPropertySources = new List<IPropertySource> { logicProbabilitySetup };
-            List<IPropertySource> viewModelNormalPlayPropertySources = new List<IPropertySource> { modelNormalPlay };
-            List<IPropertySource> viewModelAutoPlayPropertySources = new List<IPropertySource> { modelAutoPlay };
-
-            Implementations.ViewModelWinningsSetupPropertySources = viewModelWinningsSetupPropertySources;
-            Implementations.ViewModelProbabilitySetupPropertySources = viewModelProbabilitySetupPropertySources;
-            Implementations.ViewModelNormalPlayPropertySources = viewModelNormalPlayPropertySources;
-            Implementations.ViewModelAutoPlayPropertySources = viewModelAutoPlayPropertySources;
+            List<IPropertySource> winningsSetupPS = new List<IPropertySource> { logicWinningsSetup };
+            List<IPropertySource> probabilitySetupPS = new List<IPropertySource> { logicProbabilitySetup };
+            List<IPropertySource> autoPlayPS = new List<IPropertySource> { modelAutoPlay };
+            List<IPropertySource> normalPlayPS = new List<IPropertySource> { modelNormalPlay };
             #endregion
 
-            #region ViewModel sestup
-            ViewModelMachineSettings viewModelMachineSettings = new ViewModelMachineSettings();
-            ViewModelAnalyticalCalculation viewModelAnalyticalCalculation = new ViewModelAnalyticalCalculation();
-            ViewModelProbabilitySetup viewModelProbabilitySetup = new ViewModelProbabilitySetup();
-            ViewModelAutoPlay viewModelAutoPlay = new ViewModelAutoPlay();
-            ViewModelNormalPlay viewModelNormalPlay = new ViewModelNormalPlay();
-            ViewModelWinningsSetup viewModelWinningsSetup = new ViewModelWinningsSetup();
-
-            Implementations.ViewModelMachineSettings = viewModelMachineSettings;
-            Implementations.ViewModelProbabilitySetup = viewModelProbabilitySetup;
-            Implementations.ViewModelAnalyticalCalculation = viewModelAnalyticalCalculation;
-            Implementations.ViewModelAutoPlay = viewModelAutoPlay;
-            Implementations.ViewModelNormalPlay = viewModelNormalPlay;
-            Implementations.ViewModelWinningsSetup = viewModelWinningsSetup;
+            #region ViewModel setup
+            ViewModelMachineSettings vmMachineSettings = new ViewModelMachineSettings();
+            ViewModelWinningsSetup vmWinningsSetup = new ViewModelWinningsSetup(winningsSetupPS, logicWinningsSetup, 
+                compileTimeSettings.TickScaleWinnings);
+            ViewModelProbabilitySetup vmProbabilitySetup = new ViewModelProbabilitySetup(probabilitySetupPS, logicProbabilitySetup);
+            ViewModelAnalyticalCalculation vmAnalyticalCalculation = new ViewModelAnalyticalCalculation(logicAnalyticalCalculation);
+            ViewModelAutoPlay vmAutoPlay = new ViewModelAutoPlay(autoPlayPS, modelAutoPlay, logicAnalyticalCalculation,
+                compileTimeSettings.TickScaleAutoPlay);
+            ViewModelNormalPlay vmNormalPlay = new ViewModelNormalPlay(normalPlayPS, modelNormalPlay);
             #endregion
 
             #region ViewModel Proxy setup
-            List<IPropertySource> viewModelProxyPropertySources = new List<IPropertySource>
+            Setup.ViewModelMachineSettings = vmMachineSettings;
+            Setup.ViewModelWinningsSetup = vmWinningsSetup;
+            Setup.ViewModelProbabilitySetup = vmProbabilitySetup;
+            Setup.ViewModelAnalyticalCalculation = vmAnalyticalCalculation;
+            Setup.ViewModelAutoPlay = vmAutoPlay;
+            Setup.ViewModelNormalPlay = vmNormalPlay;
+
+            List<IPropertySource> vmProxyPropertySources = new List<IPropertySource>
             {
-                viewModelMachineSettings,
-                viewModelProbabilitySetup,
-                viewModelAnalyticalCalculation,
-                viewModelAutoPlay,
-                viewModelNormalPlay,
-                viewModelWinningsSetup
+                vmMachineSettings,
+                vmWinningsSetup,
+                vmProbabilitySetup,
+                vmAnalyticalCalculation,
+                vmAutoPlay,
+                vmNormalPlay
             };
 
-            Implementations.ViewModelProxyPropertySources = viewModelProxyPropertySources; 
+            Setup.ViewModelFacadePropertySources = vmProxyPropertySources; 
             #endregion
         }
-        #endregion
-
-        #region Factory methods
-        /// <summary>
-        /// Produces a specific implementation of 
-        /// the IMessages interface
-        /// </summary>
-        public static IMessages MessagesFactory(Types.Enums.UILanguage language)
-        {
-            switch (language)
-            {
-                case Types.Enums.UILanguage.Danish:
-                    return new MessagesDanish();
-                case Types.Enums.UILanguage.English:
-                    return new MessagesEnglish();
-                default:
-                    throw new ArgumentException(nameof(MessagesFactory));
-            }
-        }
-
-        /// <summary>
-        /// Produces a specific implementation of 
-        /// the IWheelImage interface
-        /// </summary>
-        public static IWheelImage WheelImageFactory(Types.Enums.UIImageSet imageSet)
-        {
-            switch (imageSet)
-            {
-                case Types.Enums.UIImageSet.A:
-                    return new WheelImageA();
-                case Types.Enums.UIImageSet.B:
-                    return new WheelImageB();
-                default:
-                    throw new ArgumentException(nameof(WheelImageFactory));
-            }
-        } 
-        #endregion
     }
 }

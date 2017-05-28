@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using MVVMSlotMachine.Configuration;
 using MVVMSlotMachine.Implementations.Properties;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 using MVVMSlotMachine.Interfaces.Models;
 using MVVMSlotMachine.Interfaces.Properties;
 using MVVMSlotMachine.Interfaces.ViewModels;
@@ -14,7 +15,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
     {
         private IModelNormalPlay _modelNormalPlay;
 
-        #region Constructors
+        #region Constructor
         public ViewModelNormalPlay(List<IPropertySource> propertySources, IModelNormalPlay modelNormalPlay)
             : base(propertySources)
         {
@@ -25,22 +26,16 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             AddPropertyDependency(nameof(IModelNormalPlay.CreditsWon), nameof(IViewModelNormalPlay.StatusText));
             AddPropertyDependency(nameof(IModelNormalPlay.CurrentNormalPlayState), nameof(IViewModelNormalPlay.StatusText));          
         }
-
-        public ViewModelNormalPlay()
-            : this(Configuration.Implementations.ViewModelNormalPlayPropertySources,
-                   Configuration.Implementations.ModelNormalPlay)
-        {
-        }
         #endregion
 
-        #region Public properties for View bindings
+        #region Public properties
         /// <summary>
         /// Text to display on the control 
         /// for starting a single game.
         /// </summary>
         public string PlayButtonText
         {
-            get { return Configuration.Implementations.Messages.GenerateText(
+            get { return Setup.RunTimeSettings.Messages.GenerateText(
                 Types.Enums.MessageType.Play, 
                 Types.Enums.MessagePostProcessing.AllCaps); } 
         }
@@ -51,7 +46,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public string CreditsText
         {
-            get { return Configuration.Implementations.Messages.GenerateText(
+            get { return Setup.RunTimeSettings.Messages.GenerateText(
                 Types.Enums.MessageType.Credits, 
                 Types.Enums.MessagePostProcessing.InitialCaps); }
         }
@@ -73,7 +68,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             {
                 if (_modelNormalPlay.CurrentNormalPlayState == Types.Enums.NormalPlayState.BeforeFirstInteraction)
                 {
-                    return Configuration.Implementations.Messages.GenerateText(
+                    return Setup.RunTimeSettings.Messages.GenerateText(
                         Types.Enums.MessageType.Ready, 
                         Types.Enums.MessagePostProcessing.InitialCaps);
                 }
@@ -84,17 +79,17 @@ namespace MVVMSlotMachine.Implementations.ViewModels
                         Types.Enums.MessagePostProcessing.InitialCaps,
                         Types.Enums.MessagePostProcessing.AddEllipsis
                     };
-                    return Configuration.Implementations.Messages.GenerateText(Types.Enums.MessageType.SpinningWheels, postProcessings);
+                    return Setup.RunTimeSettings.Messages.GenerateText(Types.Enums.MessageType.SpinningWheels, postProcessings);
                 }
                 else if (_modelNormalPlay.CreditsWon > 0)
                 {
-                    string youwonText = Configuration.Implementations.Messages.GenerateText(
+                    string youwonText = Setup.RunTimeSettings.Messages.GenerateText(
                         Types.Enums.MessageType.YouWon, 
                         Types.Enums.MessagePostProcessing.InitialCaps);
-                    string creditText = Configuration.Implementations.Messages.GenerateText(
+                    string creditText = Setup.RunTimeSettings.Messages.GenerateText(
                         Types.Enums.MessageType.Credit, 
                         Types.Enums.MessagePostProcessing.AddExclamationMark);
-                    string creditsText = Configuration.Implementations.Messages.GenerateText(
+                    string creditsText = Setup.RunTimeSettings.Messages.GenerateText(
                         Types.Enums.MessageType.Credits, 
                         Types.Enums.MessagePostProcessing.AddExclamationMark);
 
@@ -116,7 +111,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
                 Dictionary<int, string> imageSources = new Dictionary<int, string>();
                 for (int index = 0; index < _modelNormalPlay.WheelSymbols.Count; index++)
                 {
-                    imageSources.Add(index, Configuration.Implementations.WheelImage.GetImageSource(_modelNormalPlay.WheelSymbols[index]));
+                    imageSources.Add(index, Configuration.Setup.RunTimeSettings.WheelImage.GetImageSource(_modelNormalPlay.WheelSymbols[index]));
                 }
 
                 return imageSources;

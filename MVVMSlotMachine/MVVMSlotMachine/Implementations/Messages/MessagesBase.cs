@@ -68,9 +68,9 @@ namespace MVVMSlotMachine.Implementations.Messages
 
             if (postProcessActions != null)
             {
-                foreach (var action in postProcessActions)
+                foreach (var item in postProcessActions)
                 {
-                    switch (action)
+                    switch (item)
                     {
                         case Types.Enums.MessagePostProcessing.AddEllipsis:
                             processedText += "...";

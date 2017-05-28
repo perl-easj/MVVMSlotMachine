@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MVVMSlotMachine.Implementations.Properties;
-using MVVMSlotMachine.Interfaces.Common;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Properties;
 using MVVMSlotMachine.Interfaces.ViewModels;
@@ -16,17 +15,17 @@ namespace MVVMSlotMachine.Implementations.ViewModels
     {
         #region Instance fields
         private ILogicWinningsSetup _logicWinningsSetup;
-        private ITickScale _tickScale;
+        private TickScale _tickScale;
         private ItemViewModelWinningsEntry _entry;
         private ObservableCollection<ItemViewModelWinningsEntry> _winList;
         private ObservableCollection<ItemViewModelWinningsEntry> _winListCopy;
         #endregion
 
-        #region Constructors
+        #region Constructor
         public ViewModelWinningsSetup(
             List<IPropertySource> propertySources,
             ILogicWinningsSetup logicWinningsSetup,
-            ITickScale tickScale)
+            TickScale tickScale)
             : base(propertySources)
         {
             _logicWinningsSetup = logicWinningsSetup;
@@ -34,13 +33,6 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             _entry = null;
             _winList = new ObservableCollection<ItemViewModelWinningsEntry>();
             _winListCopy = null;
-        }
-
-        public ViewModelWinningsSetup() :
-            this(Configuration.Implementations.ViewModelWinningsSetupPropertySources,
-                 Configuration.Implementations.LogicWinningsSetup,
-                 Configuration.Implementations.Settings.TickScaleWinnings)
-        {
         }
         #endregion
 
@@ -151,7 +143,7 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public Dictionary<string, string> WheelSymbolImages
         {
-            get { return Configuration.Implementations.WheelImage.GetAllImageSources(); }
+            get { return Configuration.Setup.RunTimeSettings.WheelImage.GetAllImageSources(); }
         }
         #endregion
 

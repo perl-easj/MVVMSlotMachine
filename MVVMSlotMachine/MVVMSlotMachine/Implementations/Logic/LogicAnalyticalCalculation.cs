@@ -14,19 +14,13 @@ namespace MVVMSlotMachine.Implementations.Logic
         private ILogicProbabilitySetup _logicProbabilitySetup; 
         #endregion
 
-        #region Constructors
+        #region Constructor
         public LogicAnalyticalCalculation(
             ILogicWinningsSetup logicWinningsSetup,
             ILogicProbabilitySetup logicProbabilitySetup)
         {
             _logicWinningsSetup = logicWinningsSetup;
             _logicProbabilitySetup = logicProbabilitySetup;
-        }
-
-        public LogicAnalyticalCalculation() 
-            : this(Configuration.Implementations.LogicWinningsSetup, 
-                   Configuration.Implementations.LogicProbabilitySetup) 
-        {
         }
         #endregion
 

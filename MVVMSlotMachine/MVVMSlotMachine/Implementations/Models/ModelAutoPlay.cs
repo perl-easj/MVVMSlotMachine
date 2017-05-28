@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
-using MVVMSlotMachine.Controllers;
+using MVVMSlotMachine.Implementations.Controllers;
 using MVVMSlotMachine.Implementations.Properties;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Models;
 using MVVMSlotMachine.Types;
@@ -21,6 +21,7 @@ namespace MVVMSlotMachine.Implementations.Models
         #region Instance fields
         private Enums.AutoPlayState _currentAutoPlayState;
         private int _noOfRunsInAutoPlay;
+        private int _updateThreshold;
         private int _percentCompleted;
         private double _percentPayback;
         private Dictionary<int, int> _autoRunData;
@@ -36,16 +37,18 @@ namespace MVVMSlotMachine.Implementations.Models
         private bool _didCancel; 
         #endregion
 
-        #region Constructors
+        #region Constructor
         public ModelAutoPlay(
             ILogicCalculateWinnings logicCalculateWinnings,
             ILogicSymbolGenerator logicSymbolGenerator,
-            int noOfRunsInAutoPlay)
+            int noOfRunsInAutoPlay,
+            int updateThreshold)
         {
             CurrentAutoPlayState = Enums.AutoPlayState.BeforeFirstInteraction;
             NoOfRuns = noOfRunsInAutoPlay;
             PercentCompleted = 0;
             PercentPayback = 100;
+            _updateThreshold = updateThreshold;
             _autoRunData = new Dictionary<int, int>();
             _symbols = new WheelSymbolList();
 
@@ -57,13 +60,6 @@ namespace MVVMSlotMachine.Implementations.Models
             _worker = null;
             _mutex = new Mutex();
             _didCancel = false;
-        }
-
-        public ModelAutoPlay()
-            : this(Configuration.Implementations.LogicCalculateWinnings,
-                   Configuration.Implementations.LogicSymbolGenerator,
-                   Configuration.Implementations.Settings.NoOfRunsInAutoPlay)
-        {
         }
         #endregion
 
@@ -166,6 +162,7 @@ namespace MVVMSlotMachine.Implementations.Models
         public void Run(long noOfRuns)
         {
             CurrentAutoPlayState = Enums.AutoPlayState.Running;
+            _logicSymbolGenerator.Reset();
 
             _didCancel = false;
             _percentCompleted = 0;
@@ -186,7 +183,7 @@ namespace MVVMSlotMachine.Implementations.Models
 
         /// <summary>
         /// Cancels the currently running auto-play session. More precisely,
-        /// the method call CancelAsync() on the background worker, which the
+        /// the method calls CancelAsync() on the background worker, which the
         /// background worker will then need to react on.
         /// </summary>
         public void Cancel()
@@ -203,24 +200,21 @@ namespace MVVMSlotMachine.Implementations.Models
         private void AutoRun(object sender, DoWorkEventArgs doWorkEventArgs)
         {
             long runsToComplete = (long)doWorkEventArgs.Argument;
+            long runsBetweenUpdates = _updateThreshold / 100;
+            long updatePoints = Math.Max(1, Math.Min(runsToComplete / runsBetweenUpdates, 100));
 
             // Main loop for auto-play: Keep playing for the specified number 
             // of runs, unless the auto-run session is cancelled.
             for (int runsCompleted = 0; runsCompleted < runsToComplete && !_worker.CancellationPending; runsCompleted++)
             {
-                // Update auto-run data with exclusive access
-                _mutex.WaitOne();
                 _symbols.Rotate(_logicSymbolGenerator);
                 AddToAutoRunData(_symbols);
-                _mutex.ReleaseMutex();
-
-                // Report progress
-                ReportProgress(runsCompleted, runsToComplete);
+                ReportProgress(runsCompleted, runsToComplete, updatePoints);
             }
 
             // Main loop done, report final result
             doWorkEventArgs.Result = runsToComplete;
-            ReportProgress(runsToComplete, runsToComplete);
+            ReportProgress(runsToComplete, runsToComplete, updatePoints);
         }
 
         /// <summary>
@@ -257,13 +251,10 @@ namespace MVVMSlotMachine.Implementations.Models
         /// progress is fulfilled. The reporting is conditional to avoid
         /// excessive updating of the UI during short runs. 
         /// </summary>
-        private void ReportProgress(long runsCompleted, long runsToComplete)
+        private void ReportProgress(long runsCompleted, long runsToComplete, long updatePoints)
         {
-            long updateModifier = Configuration.Implementations.Settings.AutoPlayUpdateThreshold / 100;
-            long updateInterval = Math.Max(1, Math.Min(runsToComplete / updateModifier, 100));
-
             // If condition is fulfilled, call the ReportProgress method
-            if (runsCompleted % (runsToComplete / updateInterval) == 0)
+            if (runsCompleted % (runsToComplete / updatePoints) == 0)
             {
                 _percentCompleted = (int)((runsCompleted * 100) / runsToComplete);
                 _worker.ReportProgress(_percentCompleted);
@@ -272,16 +263,18 @@ namespace MVVMSlotMachine.Implementations.Models
 
         /// <summary>
         /// Amend the auto-run data with the specified wheel symbols,
-        /// which is the outcome of a single spin. This update should be 
+        /// which is the outcome of a single spin. This update is 
         /// done with exclusive access, to avoid threading issues.
         /// </summary>
         private void AddToAutoRunData(WheelSymbolList symbols)
         {
+            _mutex.WaitOne();
             if (!_autoRunData.ContainsKey(symbols.NumericKey))
             {
                 _autoRunData.Add(symbols.NumericKey, 0);
             }
             _autoRunData[symbols.NumericKey]++;
+            _mutex.ReleaseMutex();
         }
         #endregion
     }

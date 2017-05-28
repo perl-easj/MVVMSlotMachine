@@ -1,4 +1,4 @@
-﻿using MVVMSlotMachine.Interfaces.Common;
+﻿using MVVMSlotMachine.Interfaces.Controllers;
 
 namespace MVVMSlotMachine.Interfaces.Properties
 {

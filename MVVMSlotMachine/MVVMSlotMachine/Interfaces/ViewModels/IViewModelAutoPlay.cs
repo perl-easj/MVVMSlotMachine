@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Windows.UI.Xaml;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 
 namespace MVVMSlotMachine.Interfaces.ViewModels
 {

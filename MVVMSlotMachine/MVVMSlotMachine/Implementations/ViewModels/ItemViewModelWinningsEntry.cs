@@ -35,17 +35,17 @@ namespace MVVMSlotMachine.Implementations.ViewModels
 
         public string Image1Source
         {
-            get { return Count > 0 ? Configuration.Implementations.WheelImage.GetImageSource(Symbol) : ""; }
+            get { return Count > 0 ? Configuration.Setup.RunTimeSettings.WheelImage.GetImageSource(Symbol) : ""; }
         }
 
         public string Image2Source
         {
-            get { return Count > 1 ? Configuration.Implementations.WheelImage.GetImageSource(Symbol) : ""; }
+            get { return Count > 1 ? Configuration.Setup.RunTimeSettings.WheelImage.GetImageSource(Symbol) : ""; }
         }
 
         public string Image3Source
         {
-            get { return Count > 2 ? Configuration.Implementations.WheelImage.GetImageSource(Symbol) : ""; }
+            get { return Count > 2 ? Configuration.Setup.RunTimeSettings.WheelImage.GetImageSource(Symbol) : ""; }
         }
 
         public override bool Equals(object obj)

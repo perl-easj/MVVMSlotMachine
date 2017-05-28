@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MVVMSlotMachine.Configuration;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Logic;
+using MVVMSlotMachine.Interfaces.Settings;
 using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Implementations.Logic
@@ -14,10 +15,12 @@ namespace MVVMSlotMachine.Implementations.Logic
     public class LogicWinningsSetup : PropertySource, ILogicWinningsSetup
     {
         private Dictionary<WheelSymbolCount, int> _winningsSettings;
+        private ICompileTimeSettings _compileTimeSettings;
 
         #region Constructor
-        public LogicWinningsSetup()
+        public LogicWinningsSetup(ICompileTimeSettings compileTimeSettings)
         {
+            _compileTimeSettings = compileTimeSettings;
             _winningsSettings = new Dictionary<WheelSymbolCount, int>();
             SetDefaultWinnings();
         }
@@ -64,7 +67,6 @@ namespace MVVMSlotMachine.Implementations.Logic
         public int GetWinnings(Enums.WheelSymbol symbol, int count)
         {
             WheelSymbolCount entry = new WheelSymbolCount(symbol, count);
-            // int entryKey = WheelSymbolConverter.SymbolCountToKey(symbol, count);
             if (!_winningsSettings.ContainsKey(entry))
             {
                 return 0;
@@ -106,7 +108,7 @@ namespace MVVMSlotMachine.Implementations.Logic
             {
                 foreach (Enums.WheelSymbol symbol in Enum.GetValues(typeof(Enums.WheelSymbol)))
                 {
-                    int winnings = Configuration.Implementations.DefaultWinnings(symbol, count);
+                    int winnings = _compileTimeSettings.InitialWinnings(symbol, count);
                     if (winnings > 0)
                     {
                         SetWinnings(symbol, count, winnings);

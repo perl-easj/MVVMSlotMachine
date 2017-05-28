@@ -96,17 +96,18 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Implementations\Common\DefaultSettings.cs" />
+    <Compile Include="Implementations\Settings\DefaultSettings.cs" />
     <Compile Include="Configuration\DependencyInjector.cs" />
     <Compile Include="Configuration\Constants.cs" />
-    <Compile Include="Configuration\Implementations.cs" />
-    <Compile Include="Controllers\AutoPlayControllerCommand.cs" />
+    <Compile Include="Configuration\Setup.cs" />
+    <Compile Include="Implementations\Controllers\AutoPlayControllerCommand.cs" />
+    <Compile Include="Implementations\Settings\RunTimeSettings.cs" />
     <Compile Include="Implementations\ViewModels\ItemViewModelWinningsEntry.cs" />
-    <Compile Include="Interfaces\Common\ICommandExtended.cs" />
-    <Compile Include="Controllers\AddCreditsControllerCommand.cs" />
-    <Compile Include="Controllers\SpinControllerCommand.cs" />
-    <Compile Include="Implementations\Common\Settings.cs" />
-    <Compile Include="Implementations\Common\TickScale.cs" />
+    <Compile Include="Interfaces\Controllers\ICommandExtended.cs" />
+    <Compile Include="Implementations\Controllers\AddCreditsControllerCommand.cs" />
+    <Compile Include="Implementations\Controllers\SpinControllerCommand.cs" />
+    <Compile Include="Implementations\Settings\CompileTimeSettings.cs" />
+    <Compile Include="Types\TickScale.cs" />
     <Compile Include="Implementations\Logic\LogicAnalyticalCalculation.cs" />
     <Compile Include="Implementations\Logic\LogicCalculateWinnings.cs" />
     <Compile Include="Implementations\Logic\LogicProbabilitySetup.cs" />
@@ -127,9 +128,10 @@
     <Compile Include="Implementations\WheelImages\WheelImageB.cs" />
     <Compile Include="Implementations\WheelImages\WheelImageBase.cs" />
     <Compile Include="Implementations\Messages\MessagesEnglish.cs" />
+    <Compile Include="Interfaces\Settings\IRunTimeSettings.cs" />
     <Compile Include="Interfaces\Properties\IPropertySink.cs" />
-    <Compile Include="Interfaces\Common\ISettings.cs" />
-    <Compile Include="Interfaces\Common\ISettingsReadOnly.cs" />
+    <Compile Include="Interfaces\Settings\ICompileTimeSettings.cs" />
+    <Compile Include="Interfaces\Settings\ICompileTimeSettingsReadOnly.cs" />
     <Compile Include="Interfaces\Logic\ILogicAnalyticalCalculation.cs" />
     <Compile Include="Interfaces\Logic\ILogicCalculateWinnings.cs" />
     <Compile Include="Interfaces\Logic\ILogicProbabilitySetup.cs" />
@@ -138,8 +140,8 @@
     <Compile Include="Interfaces\Models\IModelAutoPlay.cs" />
     <Compile Include="Interfaces\Messages\IMessages.cs" />
     <Compile Include="Interfaces\Models\IModelNormalPlay.cs" />
-    <Compile Include="Interfaces\Common\ITickScale.cs" />
     <Compile Include="Interfaces\Properties\IPropertySource.cs" />
+    <Compile Include="Interfaces\Settings\IRunTimeSettingsReadOnly.cs" />
     <Compile Include="Interfaces\ViewModels\IViewModelAnalyticalCalculation.cs" />
     <Compile Include="Interfaces\ViewModels\IViewModelAutoPlay.cs" />
     <Compile Include="Interfaces\ViewModels\IViewModelMachineSettings.cs" />

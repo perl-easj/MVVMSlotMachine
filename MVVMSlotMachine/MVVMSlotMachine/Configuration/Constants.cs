@@ -3,8 +3,7 @@
 namespace MVVMSlotMachine.Configuration
 {
     /// <summary>
-    /// Responsibilities:
-    /// 1) Contains constants from the Slot Machine domain
+    /// This class contains constants from the Slot Machine domain
     /// </summary>
     public class Constants
     {

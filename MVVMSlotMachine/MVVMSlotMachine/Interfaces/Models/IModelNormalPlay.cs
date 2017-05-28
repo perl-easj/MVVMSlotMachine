@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 using MVVMSlotMachine.Types;
 
 namespace MVVMSlotMachine.Interfaces.Models

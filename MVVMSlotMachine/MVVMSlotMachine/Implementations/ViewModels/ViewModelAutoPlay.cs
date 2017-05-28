@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
+using MVVMSlotMachine.Configuration;
 using MVVMSlotMachine.Implementations.Properties;
-using MVVMSlotMachine.Interfaces.Common;
+using MVVMSlotMachine.Interfaces.Controllers;
 using MVVMSlotMachine.Interfaces.Logic;
 using MVVMSlotMachine.Interfaces.Models;
 using MVVMSlotMachine.Interfaces.Properties;
@@ -19,16 +20,16 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         #region Instance fields
         private IModelAutoPlay _modelAutoPlay;
         private ILogicAnalyticalCalculation _logicAnalyticalCalculation;
-        private ITickScale _tickScale;
+        private TickScale _tickScale;
         private Dictionary<string, string> _nullAutoRunData; 
         #endregion
 
-        #region Constructors
+        #region Constructor
         public ViewModelAutoPlay(
             List<IPropertySource> propertySources, 
             IModelAutoPlay modelAutoPlay,
             ILogicAnalyticalCalculation logicAnalyticalCalculation,
-            ITickScale tickScale)
+            TickScale tickScale)
             : base(propertySources)
         {
             _modelAutoPlay = modelAutoPlay;
@@ -48,14 +49,6 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             AddPropertyDependency(nameof(IModelAutoPlay.NoOfRuns), nameof(IViewModelAutoPlay.NoOfRunsTick));
             AddPropertyDependency(nameof(IModelAutoPlay.NoOfRuns), nameof(IViewModelAutoPlay.AutoRunDataText));
         }
-
-        public ViewModelAutoPlay()
-            : this(Configuration.Implementations.ViewModelAutoPlayPropertySources, 
-                   Configuration.Implementations.ModelAutoPlay,
-                   Configuration.Implementations.LogicAnalyticalCalculation,
-                   Configuration.Implementations.Settings.TickScaleAutoPlay)
-        {
-        }
         #endregion
 
         #region Public properties
@@ -69,10 +62,10 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             {
                 if (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Running)
                 {
-                    return Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Cancel, Enums.MessagePostProcessing.InitialCaps);
+                    return Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Cancel, Enums.MessagePostProcessing.InitialCaps);
                 }
 
-                return Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Go, Enums.MessagePostProcessing.InitialCaps);
+                return Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Go, Enums.MessagePostProcessing.InitialCaps);
             }
         }
 
@@ -86,21 +79,21 @@ namespace MVVMSlotMachine.Implementations.ViewModels
             {
                 if (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Idle)
                 {
-                    string paybackText = Configuration.Implementations.Messages.GenerateText(Enums.MessageType.PayBack);
-                    string simulatedText = Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Simulated);
-                    string runsText = Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Spins);
+                    string paybackText = Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.PayBack);
+                    string simulatedText = Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Simulated);
+                    string runsText = Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Spins);
 
                     return string.Format("{0:0.00} % {2} ({3}, {1:0,0} {4})",
                            _modelAutoPlay.PercentPayback, _modelAutoPlay.NoOfRuns, paybackText, simulatedText, runsText);
                 }
                 else if (_modelAutoPlay.CurrentAutoPlayState == Enums.AutoPlayState.Running)
                 {
-                    return _modelAutoPlay.PercentCompleted + " % " + 
-                           Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Done);
+                    return _modelAutoPlay.PercentCompleted + " % " +
+                           Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Done);
                 }
                 else
                 {
-                    return Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Ready, Enums.MessagePostProcessing.InitialCaps);
+                    return Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Ready, Enums.MessagePostProcessing.InitialCaps);
                 }
             }
         }
@@ -129,8 +122,8 @@ namespace MVVMSlotMachine.Implementations.ViewModels
         /// </summary>
         public string NoOfRunsText
         {
-            get { return string.Format("  {0:0,0} {1}", _modelAutoPlay.NoOfRuns, 
-                         Configuration.Implementations.Messages.GenerateText(Enums.MessageType.Spins)); }
+            get { return string.Format("  {0:0,0} {1}", _modelAutoPlay.NoOfRuns,
+                         Setup.RunTimeSettings.Messages.GenerateText(Enums.MessageType.Spins)); }
         }
 
         /// <summary>
