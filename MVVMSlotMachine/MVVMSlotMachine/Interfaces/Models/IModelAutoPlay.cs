@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MVVMSlotMachine.Interfaces.Controllers;
 
 namespace MVVMSlotMachine.Interfaces.Models
@@ -44,7 +45,7 @@ namespace MVVMSlotMachine.Interfaces.Models
         /// <summary>
         /// Invoke an auto-play session, with the specified number of runs
         /// </summary>
-        void Run(long noOfRuns);
+        Task Run(long noOfRuns);
 
         /// <summary>
         /// Cancels the currently running auto-play session

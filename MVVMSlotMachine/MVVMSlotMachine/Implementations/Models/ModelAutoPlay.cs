@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
+using System.Threading.Tasks;
 using MVVMSlotMachine.Implementations.Controllers;
 using MVVMSlotMachine.Implementations.Properties;
 using MVVMSlotMachine.Interfaces.Controllers;
@@ -32,9 +31,9 @@ namespace MVVMSlotMachine.Implementations.Models
         private ILogicCalculateWinnings _logicCalculateWinnings;
         private ILogicSymbolGenerator _logicSymbolGenerator;
 
-        private BackgroundWorker _worker;
-        private Mutex _mutex;
-        private bool _didCancel; 
+        private IProgress<int> _progressHandler;
+        private bool _didCancel;
+        private static object _lock = new object();
         #endregion
 
         #region Constructor
@@ -57,8 +56,7 @@ namespace MVVMSlotMachine.Implementations.Models
             _logicCalculateWinnings = logicCalculateWinnings;
             _logicSymbolGenerator = logicSymbolGenerator;
 
-            _worker = null;
-            _mutex = new Mutex();
+            _progressHandler = new Progress<int>(i => { OnPropertyChanged(nameof(PercentCompleted)); });
             _didCancel = false;
         }
         #endregion
@@ -131,13 +129,15 @@ namespace MVVMSlotMachine.Implementations.Models
         {
             get
             {
-                _mutex.WaitOne();
                 Dictionary<int, int> autoRunDataCopy = new Dictionary<int, int>();
-                foreach (var item in _autoRunData)
+
+                lock (_lock)
                 {
-                    autoRunDataCopy.Add(item.Key, item.Value);
+                    foreach (var item in _autoRunData)
+                    {
+                        autoRunDataCopy.Add(item.Key, item.Value);
+                    }
                 }
-                _mutex.ReleaseMutex();
 
                 return autoRunDataCopy;
             }
@@ -159,53 +159,46 @@ namespace MVVMSlotMachine.Implementations.Models
         /// The auto-play session is invoked on a separate thread, using
         /// a BackgroundWorker objects
         /// </summary>
-        public void Run(long noOfRuns)
+        public async Task Run(long noOfRuns)
         {
             CurrentAutoPlayState = Enums.AutoPlayState.Running;
             _logicSymbolGenerator.Reset();
 
             _didCancel = false;
             _percentCompleted = 0;
-            _autoRunData = new Dictionary<int, int>();
-            _worker = new BackgroundWorker();
 
-            // Set up all the relevant properties of the background worker,
-            // in particular the methods to call at various stages of the task.
-            _worker.WorkerReportsProgress = true;
-            _worker.WorkerSupportsCancellation = true;
-            _worker.DoWork += AutoRun;
-            _worker.ProgressChanged += AutoRunProgressUpdate;
-            _worker.RunWorkerCompleted += AutoRunCompleted;
+            lock (_lock)
+            {
+                _autoRunData = new Dictionary<int, int>();
+            }
 
-            // Start the BackgroundWorker
-            _worker.RunWorkerAsync(noOfRuns);
+            await Task.Run(() => { AutoRun(noOfRuns); });
+            AutoRunCompleted(noOfRuns);
         }
 
         /// <summary>
         /// Cancels the currently running auto-play session. More precisely,
-        /// the method calls CancelAsync() on the background worker, which the
-        /// background worker will then need to react on.
+        /// the method sets _didCancel to true, which the background task 
+        /// will then need to react on.
         /// </summary>
         public void Cancel()
         {
             _didCancel = true;
-            _worker.CancelAsync();
         }
         #endregion
 
         #region Private methods
         /// <summary>
-        /// Method called by the background worker's DoWork method
+        /// Method called inside a Task, to enable background execution
         /// </summary>
-        private void AutoRun(object sender, DoWorkEventArgs doWorkEventArgs)
+        private void AutoRun(long runsToComplete)
         {
-            long runsToComplete = (long)doWorkEventArgs.Argument;
             long runsBetweenUpdates = _updateThreshold / 100;
             long updatePoints = Math.Max(1, Math.Min(runsToComplete / runsBetweenUpdates, 100));
 
             // Main loop for auto-play: Keep playing for the specified number 
             // of runs, unless the auto-run session is cancelled.
-            for (int runsCompleted = 0; runsCompleted < runsToComplete && !_worker.CancellationPending; runsCompleted++)
+            for (int runsCompleted = 0; runsCompleted < runsToComplete && !_didCancel; runsCompleted++)
             {
                 _symbols.Rotate(_logicSymbolGenerator);
                 AddToAutoRunData(_symbols);
@@ -213,22 +206,13 @@ namespace MVVMSlotMachine.Implementations.Models
             }
 
             // Main loop done, report final result
-            doWorkEventArgs.Result = runsToComplete;
             ReportProgress(runsToComplete, runsToComplete, updatePoints);
         }
 
         /// <summary>
-        /// Method called by the background worker's WorkerReportsProgress method
+        /// Method called when AutoRun session has terminated
         /// </summary>
-        private void AutoRunProgressUpdate(object sender, ProgressChangedEventArgs progressChangedEventArgs)
-        {
-            OnPropertyChanged(nameof(PercentCompleted));
-        }
-
-        /// <summary>
-        /// Method called by the background worker's RunWorkerCompleted method
-        /// </summary>
-        private void AutoRunCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        private void AutoRunCompleted(long runsCompleted)
         {
             // In case of cancellation; revert to initial state
             if (_didCancel)
@@ -240,7 +224,6 @@ namespace MVVMSlotMachine.Implementations.Models
             else
             {
                 int autoRunWinnings = _logicCalculateWinnings.CalculateTotalWinnings(_autoRunData);
-                long runsCompleted = (long)runWorkerCompletedEventArgs.Result;
                 PercentPayback = (autoRunWinnings * 100.0) / (runsCompleted * 1.0);
                 CurrentAutoPlayState = Enums.AutoPlayState.Idle;
             }
@@ -257,7 +240,7 @@ namespace MVVMSlotMachine.Implementations.Models
             if (runsCompleted % (runsToComplete / updatePoints) == 0)
             {
                 _percentCompleted = (int)((runsCompleted * 100) / runsToComplete);
-                _worker.ReportProgress(_percentCompleted);
+                _progressHandler.Report(_percentCompleted);
             }
         }
 
@@ -268,13 +251,14 @@ namespace MVVMSlotMachine.Implementations.Models
         /// </summary>
         private void AddToAutoRunData(WheelSymbolList symbols)
         {
-            _mutex.WaitOne();
-            if (!_autoRunData.ContainsKey(symbols.NumericKey))
+            lock (_lock)
             {
-                _autoRunData.Add(symbols.NumericKey, 0);
+                if (!_autoRunData.ContainsKey(symbols.NumericKey))
+                {
+                    _autoRunData.Add(symbols.NumericKey, 0);
+                }
+                _autoRunData[symbols.NumericKey]++;
             }
-            _autoRunData[symbols.NumericKey]++;
-            _mutex.ReleaseMutex();
         }
         #endregion
     }
