@@ -16,8 +16,9 @@ namespace MVVMSlotMachine.Implementations.Controllers
         }
 
         /// <summary>
-        /// You can only start a game if the machine is idle, and 
-        /// you have more than 0 (zero) credits.
+        /// You can only start a spin if 
+        ///   1) the machine is idle, and 
+        ///   2) you have more than 0 (zero) credits.
         /// </summary>
         public override bool CanExecute(object parameter)
         {
@@ -28,8 +29,8 @@ namespace MVVMSlotMachine.Implementations.Controllers
         }
 
         /// <summary>
-        /// A game can run asyncronously, but we await the completion of the game,
-        /// before querying for the outcome of the game.
+        /// We await the completion of the spin,
+        /// before querying for the outcome of the spin.
         /// </summary>
         public override async void Execute(object parameter)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MVVMSlotMachine.Implementations.Controllers;
 using MVVMSlotMachine.Implementations.Properties;
@@ -32,7 +33,7 @@ namespace MVVMSlotMachine.Implementations.Models
         private ILogicSymbolGenerator _logicSymbolGenerator;
 
         private IProgress<int> _progressHandler;
-        private bool _didCancel;
+        private CancellationTokenSource _cancellationTokenSource;
         private static object _lock = new object();
         #endregion
 
@@ -57,7 +58,7 @@ namespace MVVMSlotMachine.Implementations.Models
             _logicSymbolGenerator = logicSymbolGenerator;
 
             _progressHandler = new Progress<int>(i => { OnPropertyChanged(nameof(PercentCompleted)); });
-            _didCancel = false;
+            _cancellationTokenSource = null;
         }
         #endregion
 
@@ -156,15 +157,13 @@ namespace MVVMSlotMachine.Implementations.Models
         #region Public methods
         /// <summary>
         /// Invoke an auto-play session, with the specified number of runs.
-        /// The auto-play session is invoked on a separate thread, using
-        /// a BackgroundWorker objects
+        /// The auto-play session is invoked as a separate Task
         /// </summary>
         public async Task Run(long noOfRuns)
         {
             CurrentAutoPlayState = Enums.AutoPlayState.Running;
             _logicSymbolGenerator.Reset();
 
-            _didCancel = false;
             _percentCompleted = 0;
 
             lock (_lock)
@@ -172,33 +171,39 @@ namespace MVVMSlotMachine.Implementations.Models
                 _autoRunData = new Dictionary<int, int>();
             }
 
-            await Task.Run(() => { AutoRun(noOfRuns); });
-            AutoRunCompleted(noOfRuns);
+            _cancellationTokenSource = new CancellationTokenSource();
+            Task autoRunTask = new Task(() => { AutoRun(noOfRuns, _cancellationTokenSource.Token); }, _cancellationTokenSource.Token);
+
+            autoRunTask.Start();
+            await autoRunTask;
+
+            AutoRunCompleted(noOfRuns, _cancellationTokenSource.Token);
         }
 
         /// <summary>
         /// Cancels the currently running auto-play session. More precisely,
-        /// the method sets _didCancel to true, which the background task 
-        /// will then need to react on.
+        /// the method calls _cancellationTokenSource.Cancel(), which the  
+        /// auto-play task will then need to react on.
         /// </summary>
         public void Cancel()
         {
-            _didCancel = true;
+            _cancellationTokenSource?.Cancel();
         }
         #endregion
 
         #region Private methods
         /// <summary>
-        /// Method called inside a Task, to enable background execution
+        /// Method called by the auto-play Task object, 
+        /// to enable background execution
         /// </summary>
-        private void AutoRun(long runsToComplete)
+        private void AutoRun(long runsToComplete, CancellationToken token)
         {
             long runsBetweenUpdates = _updateThreshold / 100;
             long updatePoints = Math.Max(1, Math.Min(runsToComplete / runsBetweenUpdates, 100));
 
             // Main loop for auto-play: Keep playing for the specified number 
             // of runs, unless the auto-run session is cancelled.
-            for (int runsCompleted = 0; runsCompleted < runsToComplete && !_didCancel; runsCompleted++)
+            for (int runsCompleted = 0; runsCompleted < runsToComplete && !token.IsCancellationRequested; runsCompleted++)
             {
                 _symbols.Rotate(_logicSymbolGenerator);
                 AddToAutoRunData(_symbols);
@@ -212,10 +217,10 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Method called when AutoRun session has terminated
         /// </summary>
-        private void AutoRunCompleted(long runsCompleted)
+        private void AutoRunCompleted(long runsCompleted, CancellationToken token)
         {
             // In case of cancellation; revert to initial state
-            if (_didCancel)
+            if (token.IsCancellationRequested)
             {
                 PercentPayback = 0;
                 CurrentAutoPlayState = Enums.AutoPlayState.BeforeFirstInteraction;
@@ -247,7 +252,7 @@ namespace MVVMSlotMachine.Implementations.Models
         /// <summary>
         /// Amend the auto-run data with the specified wheel symbols,
         /// which is the outcome of a single spin. This update is 
-        /// done with exclusive access, to avoid threading issues.
+        /// done with thread-safe access to data.
         /// </summary>
         private void AddToAutoRunData(WheelSymbolList symbols)
         {
